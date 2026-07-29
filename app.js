@@ -26,10 +26,6 @@ app.listen(PORT, () => {
 
 
 
-
-
-
-
 // const server = createServer(async (req, res) => {
 //     console.log(req.method, req.url);
 
