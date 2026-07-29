@@ -3,7 +3,7 @@ import crypto from "crypto";     //random value create
 import path from "path";
 import { Router } from "express";
 
-const router = Router();
+const router = Router();    //create router
 
 const DATA_FILE = path.join("data", "links.json");
 

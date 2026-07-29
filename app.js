@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import { shortenerRoutes } from "./routes/shortener.routes.js";
+import { shortenerRoutes } from "./routes/shortener.routes.js";    //Import roiuter 
 
 //import router from "./routes/shortener.routes.js";
 //import { createServer } from "http";
@@ -15,7 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 
 //express router
 //app.use(Router);
-app.use(shortenerRoutes);
+app.use(shortenerRoutes);      //Use Router
+
 
 
 app.listen(PORT, () => {
