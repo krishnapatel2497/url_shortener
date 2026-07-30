@@ -24,6 +24,17 @@ const saveLinks = async (links) => {
     await writeFile(DATA_FILE, JSON.stringify(links));
 }
 
+router.get("/report", (req, res) => {
+    const student = [
+        { name: "Krishna", grade: "10th", favoriteSubject: "Mathematics", },
+        { name: "Ishita", grade: "9th", favoriteSubject: "Science", },
+        { name: "Rohan", grade: "8th", favoriteSubject: "History", },
+        { name: "Meera", grade: "10th", favoriteSubject: "English", },
+        { name: "Kabir", grade: "11th", favoriteSubject: "Mathematics", }
+    ];
+    return res.render("report", { student });     //why use render ? :to display report.ejs file
+
+})
 
 router.get("/", async (req, res) => {
     try {
@@ -59,7 +70,7 @@ router.post("/", async (req, res) => {
         await saveLinks(links);
         return res.redirect("/?success=true");
     } catch (error) {
-        console.error(err);
+        console.error(error);
         return res.status(500).send("Internal server error");
     }
 })
@@ -75,7 +86,7 @@ router.get("/:shortCode", async (req, res) => {
 
         return res.redirect(links[shortCode]);
     } catch (error) {
-        console.error(err);
+        console.error(error);
         return res.status(500).send("Internal server error");
     }
 })
