@@ -5,7 +5,7 @@
 }
 body {
   font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #b9bed5, #9c57e1);
+  background: linear-gradient(135deg, #b9bed5, #848ec2);
   min-height: 100vh;
   padding-top: 100px;
 }
@@ -78,7 +78,7 @@ button {
   border: none;
   border-radius: 10px;
 
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, #667eea, #7e37c6);
 
   color: white;
 
