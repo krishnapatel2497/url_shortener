@@ -49,7 +49,7 @@ export const redirectToShortLink = async (req, res) => {
     const link = await getLinkByShortCode(shortCode);
 
     //if (!links[shortCode]) return res.status(404).send("404 error occurred");
-    if (!link) return res.redirect("/404");
+    if (!link) return res.status(404).send("404 - Short URL not found");
     return res.redirect(link.url);
   } catch (error) {
     console.error(error);
