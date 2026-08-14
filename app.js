@@ -1,33 +1,28 @@
 import express, { Router } from "express";
-import { shortenerRoutes } from "./routes/shortener.routes.js";    //Import roiuter 
+import { shortenerRoutes } from "./routes/shortener.routes.js"; //Import roiuter
+import { authRoutes } from "./routes/auth.routes.js";
 
 //import router from "./routes/shortener.routes.js";
 //import { createServer } from "http";
-
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 
-app.set("view engine", "ejs");     //set EJS Template Engine   //by default views folder access 
+app.set("view engine", "ejs"); //set EJS Template Engine   //by default views folder access
 // app.set("views", "./views")
 
 //express router
 //app.use(Router);
-app.use(shortenerRoutes);      //Use Router
-
-
+app.use(authRoutes);
+app.use(shortenerRoutes); //Use Router
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
-
-
-
 
 // const server = createServer(async (req, res) => {
 //     console.log(req.method, req.url);
@@ -96,7 +91,6 @@ app.listen(PORT, () => {
 //             body = body + chunk;
 //         });
 
-
 //         req.on("end", async () => {
 //             console.log(body);
 //             const { url, shortCode } = JSON.parse(body);
@@ -122,5 +116,3 @@ app.listen(PORT, () => {
 //         });
 //     }
 // });
-
-
