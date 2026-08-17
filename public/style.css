@@ -271,6 +271,34 @@ li a:hover {
   margin-bottom: 28px;
 }
 
+.login-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.login-image img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  display: block;
+}
+
+.register-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.register-image img {
+  width: 260px;
+  height: 260px;
+  object-fit: contain;
+  display: block;
+}
+
 .auth-form {
   width: 100%;
 }

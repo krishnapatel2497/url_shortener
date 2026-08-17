@@ -3,7 +3,7 @@ import * as authControllers from "../controllers/auth.controller.js";
 
 const router = Router();
 
-router.get("/register", authControllers.getRegisterPage); //getRegisterPage = controllers hai
-router.get("/login", authControllers.getLoginPage); //getLoginPage = controllers hai...
+router.get("/register", authControllers.getRegisterPage); //getRegisterPage = controllers 
+router.get("/login", authControllers.getLoginPage); //getLoginPage = controllers 
 
 export const authRoutes = router;
