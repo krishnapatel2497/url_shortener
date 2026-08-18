@@ -1,5 +1,11 @@
 <%- include('./partials/header', { title: "URL Shortner" }) %>
 
+<% if (isLoggedIn) { %>
+    <h2>You are logged In</h2>
+<% } else { %>
+    <h2>You are not logged In</h2>
+<% } %>
+
 <div class="container">
 
     <h1>URL Shortner</h1>
@@ -45,7 +51,7 @@
     <ul>
         <% links.forEach((link) => { %>
 
-            <% 
+            <%
                 const truncatedURL =
                     link.url.length >= 30
                         ? `${link.url.slice(0, 30)}...`
