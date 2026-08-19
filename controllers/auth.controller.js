@@ -1,6 +1,7 @@
 import { userCollection } from "../config/db-client.js";
 //import bcrypt from "bcrypt";
 import argon2 from "argon2";
+import { generateToken } from "../utils/generateToken.js";
 
 export const getRegisterPage = (req, res) => {
   return res.render("auth/register"); //auth folder-page:register
@@ -57,7 +58,14 @@ export const postLogin = async (req, res) => {
     return res.send("Invalid email or password");
   }
 
-  res.cookie("isLoggedIn", true); //set cookie
+  //res.cookie("isLoggedIn", true); //set cookie onle one
 
+  const token = generateToken({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+  });
+
+  res.cookie("access_token", token);  // cookie name : access_token 
   res.redirect("/");
 };
