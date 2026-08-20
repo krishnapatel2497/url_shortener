@@ -4,10 +4,14 @@ import argon2 from "argon2";
 import { generateToken } from "../utils/generateToken.js";
 
 export const getRegisterPage = (req, res) => {
+  if (req.user) return res.redirect("/");
+
   return res.render("auth/register"); //auth folder-page:register
 };
 
 export const postRegisterPage = async (req, res) => {
+  if (req.user) return res.redirect("/");
+
   console.log(req.body);
 
   // Get registration data
@@ -30,10 +34,14 @@ export const postRegisterPage = async (req, res) => {
 };
 
 export const getLoginPage = (req, res) => {
+  if (req.user) return res.redirect("/");
+
   return res.render("auth/login"); //auth folder-page:login
 };
 
 export const postLogin = async (req, res) => {
+  if (req.user) return res.redirect("/");
+
   const { email, password } = req.body;
   console.log(req.body);
 
@@ -69,4 +77,9 @@ export const postLogin = async (req, res) => {
 export const getme = (req, res) => {
   if (!req.user) return res.send("Not logged in");
   return res.send(`<h1>Hey ${req.user.name} - ${req.user.email}</h1>`);
+};
+
+export const LogoutUser = (req, res) => {
+  res.clearCookie("access_token"); //delete access-token when user click logout button
+  res.redirect("/login");
 };
