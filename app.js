@@ -3,6 +3,7 @@ import { shortenerRoutes } from "./routes/shortener.routes.js"; //Import roiuter
 import { authRoutes } from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import { dbclient } from "./config/db-client.js";
+import { verifyAuthentication } from "./middleware/authMiddleware.js";
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(express.json());
 app.set("view engine", "ejs"); //set EJS Template Engine   //by default views folder access
 
 app.use(cookieParser());
+
+app.use(verifyAuthentication);
 
 app.use(authRoutes);
 app.use(shortenerRoutes); //Use Router

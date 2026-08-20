@@ -60,12 +60,8 @@ export const postLogin = async (req, res) => {
 
   //res.cookie("isLoggedIn", true); //set cookie onle one
 
-  const token = generateToken({
-    id: user.id,
-    name: user.name,
-    email: user.email,
-  });
+  const token = generateToken(user._id.toString(), user.name, user.email);
 
-  res.cookie("access_token", token);  // cookie name : access_token 
+  res.cookie("access_token", token); // cookie name : access_token
   res.redirect("/");
 };
