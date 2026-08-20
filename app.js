@@ -19,6 +19,11 @@ app.use(cookieParser());
 
 app.use(verifyAuthentication);
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  return next();
+});                        //req.use declare at app.js as a user propery   and use at index.js as a user 
+
 app.use(authRoutes);
 app.use(shortenerRoutes); //Use Router
 

@@ -65,3 +65,8 @@ export const postLogin = async (req, res) => {
   res.cookie("access_token", token); // cookie name : access_token
   res.redirect("/");
 };
+
+export const getme = (req, res) => {
+  if (!req.user) return res.send("Not logged in");
+  return res.send(`<h1>Hey ${req.user.name} - ${req.user.email}</h1>`);
+};

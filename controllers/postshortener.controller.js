@@ -9,11 +9,7 @@ export const getShortenerPage = async (req, res) => {
   try {
     const links = await loadLinks();
 
-
-    let isLoggedIn = req.cookies.isLoggedIn;   //get cookies
-    
-
-    return res.render("index", { links, host: req.host, isLoggedIn });
+    return res.render("index", { links, host: req.host });
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal server error");
