@@ -4,6 +4,8 @@ import { authRoutes } from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import { dbclient } from "./config/db-client.js";
 import { verifyAuthentication } from "./middleware/authMiddleware.js";
+import session from "express-session";
+import flash from "connect-flash";
 
 const app = express();
 
@@ -17,12 +19,17 @@ app.set("view engine", "ejs"); //set EJS Template Engine   //by default views fo
 
 app.use(cookieParser());
 
+app.use(
+  session({ secret: "my-secret", resave: true, saveUninitialized: false }),
+);
+app.use(flash());
+
 app.use(verifyAuthentication);
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
   return next();
-});                        //req.use declare at app.js as a user propery   and use at index.js as a user 
+}); //req.use declare at app.js as a user propery   and use at index.js as a user
 
 app.use(authRoutes);
 app.use(shortenerRoutes); //Use Router

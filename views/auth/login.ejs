@@ -43,6 +43,19 @@
             />
         </div>
 
+
+         <% if (errors && errors.length > 0) { %>
+
+          <% errors.forEach((error) => { %>
+
+           <p class="flash-error">
+              <%= error %>
+           </p>
+
+          <% }); %>
+
+        <% } %>
+
         <button type="submit">Login</button>
 
     </form>

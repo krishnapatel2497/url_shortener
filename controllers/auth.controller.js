@@ -6,16 +6,25 @@ import { generateToken } from "../utils/generateToken.js";
 export const getRegisterPage = (req, res) => {
   if (req.user) return res.redirect("/");
 
-  return res.render("auth/register"); //auth folder-page:register
+  return res.render("auth/register", { errors: req.flash("errors") }); //auth folder-page:register
 };
 
 export const postRegisterPage = async (req, res) => {
   if (req.user) return res.redirect("/");
-
-  console.log(req.body);
+  //console.log(req.body);
 
   // Get registration data
   const { name, email, password } = req.body;
+
+  // Check whether user already exists
+  const userExists = await userCollection.findOne({
+    email: email,
+  });
+
+  if (userExists) {
+    req.flash("errors", "User already exists");
+    return res.redirect("/register");
+  }
 
   // Hash password using Argon2
   const hashedPassword = await argon2.hash(password);
@@ -36,7 +45,11 @@ export const postRegisterPage = async (req, res) => {
 export const getLoginPage = (req, res) => {
   if (req.user) return res.redirect("/");
 
-  return res.render("auth/login"); //auth folder-page:login
+  return res.render("auth/login", {
+    //auth folder-page:login
+    errors: req.flash("errors"),
+    success: req.flash("success"),
+  });
 };
 
 export const postLogin = async (req, res) => {
@@ -53,7 +66,8 @@ export const postLogin = async (req, res) => {
 
   // User doesn't exist
   if (!user) {
-    return res.send("Invalid email or password");
+    req.flash("errors", "Invalid Email or Password");
+    return res.redirect("/login");
   }
 
   // // Compare entered password with hashed password
@@ -63,7 +77,8 @@ export const postLogin = async (req, res) => {
   const isPasswordCorrect = await argon2.verify(user.password, password);
 
   if (!isPasswordCorrect) {
-    return res.send("Invalid email or password");
+    req.flash("errors", "Invalid Email or Password");
+    return res.redirect("/login");
   }
 
   //res.cookie("isLoggedIn", true); //set cookie onle one

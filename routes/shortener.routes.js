@@ -9,6 +9,18 @@ const router = Router(); //create router
 
 router.get("/", getShortenerPage);
 
+router.get("/about", (req, res) => {
+  res.render("about", {
+    title: "About - URL Shortener",
+  });
+});
+
+router.get("/contact", (req, res) => {
+  res.render("contact", {
+    title: "Contact - URL Shortener",
+  });
+});
+
 router.post("/", postURLShortener);
 
 router.get("/:shortCode", redirectToShortLink);
