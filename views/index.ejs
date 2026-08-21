@@ -14,13 +14,28 @@
         Convert long URLs into short and shareable links.
     </p>
 
+
+      <!-- Zod validation error -->
+    <% if (errors && errors.length > 0) { %>
+    <div class="error-message">
+        <%= errors[0] %>
+    </div>
+    <% } %>
+
+       <!-- Success message -->
+    <% if (success && success.length > 0) { %>
+    <div class="success-message">
+        <%= success[0] %>
+    </div>
+    <% } %>
+
     <form action="/" method="post">
 
         <div class="form-group">
             <label for="url">Original URL</label>
 
             <input
-                type="url"
+                type="text"
                 id="url"
                 name="url"
                 placeholder="https://example.com"
@@ -75,19 +90,21 @@
 </div>
 
 <script>
-    const params = new URLSearchParams(window.location.search);
+    // const params = new URLSearchParams(window.location.search);
 
-    if (params.get("success") === "true") {
+    // if (params.get("success") === "true") {
 
-        alert("Form submitted successfully");
+    //     alert("Form submitted successfully");
 
-        // Remove ?success=true from the URL
-        window.history.replaceState(
-            {},
-            document.title,
-            "/"
-        );
-    }
+    //     // Remove ?success=true from the URL
+    //     window.history.replaceState(
+    //         {},
+    //         document.title,
+    //         "/"
+    //     );
+    // }
+
+    //already using:req.flash Therefore this is unnecessary:
 </script>
 
 <%- include('./partials/footer') %>

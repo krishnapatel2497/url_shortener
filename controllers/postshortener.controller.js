@@ -6,6 +6,7 @@ import {
   getLinksByUserId,
   saveLinks,
 } from "../models/shortener.model.js";
+import { shortenerSchema } from "../validators/shortener-validators.js";
 
 // Show only the logged-in user's short links
 export const getShortenerPage = async (req, res) => {
@@ -21,6 +22,8 @@ export const getShortenerPage = async (req, res) => {
     return res.render("index", {
       links,
       host: req.host,
+      errors: req.flash("errors"),
+      success: req.flash("success"),
     });
   } catch (error) {
     console.error(error);
@@ -36,17 +39,29 @@ export const postURLShortener = async (req, res) => {
       return res.redirect("/login");
     }
 
-    const { url, shortCode } = req.body;
+    // Validate form data using Zod
+    const { data, error } = shortenerSchema.safeParse(req.body);
 
-    const finalShortCode = shortCode || crypto.randomBytes(4).toString("hex");
+    if (error) {
+      const errors = error.issues[0].message;
+
+      req.flash("errors", errors);
+
+      return res.redirect("/");
+    }
+
+    // Get validated data
+    const { url, shortCode } = data;
+
+    // Generate random short code if user doesn't provide one
+    const finalShortCode = shortCode || crypto.randomBytes(4).toString("hex");   //shortCode is now required this is no longer necessary : crypto.randomBytes(4).toString("hex");
 
     // Check whether short code already exists
     const existingLink = await getLinkByShortCode(finalShortCode);
 
     if (existingLink) {
-      return res
-        .status(400)
-        .send("400 - Short code already exists. Please choose another.");
+      req.flash("errors", "Short code already exists. Please choose another.");
+      return res.redirect("/");
     }
 
     // Save the link with the logged-in user's ID
@@ -56,7 +71,9 @@ export const postURLShortener = async (req, res) => {
       userId: new ObjectId(req.user.id),
     });
 
-    return res.redirect("/?success=true");
+    req.flash("success", "Short URL created successfully");
+
+    return res.redirect("/");
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal server error");
