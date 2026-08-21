@@ -2,6 +2,10 @@ import { userCollection } from "../config/db-client.js";
 //import bcrypt from "bcrypt";
 import argon2 from "argon2";
 import { generateToken } from "../utils/generateToken.js";
+import {
+  loginUserSchema,
+  registerUserSchema,
+} from "../validators/auth-validators.js";
 
 export const getRegisterPage = (req, res) => {
   if (req.user) return res.redirect("/");
@@ -11,10 +15,18 @@ export const getRegisterPage = (req, res) => {
 
 export const postRegisterPage = async (req, res) => {
   if (req.user) return res.redirect("/");
-  //console.log(req.body);
 
-  // Get registration data
-  const { name, email, password } = req.body;
+  // Validate registration data using Zod
+  const { data, error } = registerUserSchema.safeParse(req.body);
+
+  if (error) {
+    const errors = error.issues[0].message;
+    req.flash("errors", errors);
+    return res.redirect("/register");
+  }
+
+  // Get validated data
+  const { name, email, password } = data;
 
   // Check whether user already exists
   const userExists = await userCollection.findOne({
@@ -39,7 +51,7 @@ export const postRegisterPage = async (req, res) => {
     password: hashedPassword,
   });
 
-  res.redirect("/login");
+  return res.redirect("/login");
 };
 
 export const getLoginPage = (req, res) => {
@@ -55,8 +67,17 @@ export const getLoginPage = (req, res) => {
 export const postLogin = async (req, res) => {
   if (req.user) return res.redirect("/");
 
-  const { email, password } = req.body;
-  console.log(req.body);
+  // Validate registration data using Zod
+  const { data, error } = loginUserSchema.safeParse(req.body);
+
+  if (error) {
+    const errors = error.issues[0].message;
+    req.flash("errors", errors);
+    return res.redirect("/login");
+  }
+
+  // Get validated data
+  const { email, password } = data;
 
   // Find user by email
   const user = await userCollection.findOne({
