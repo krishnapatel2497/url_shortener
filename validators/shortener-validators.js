@@ -1,15 +1,15 @@
 import z from "zod";
 
 export const shortenerSchema = z.object({
-  url: z.url("Please enter a valid URL").trim(),
+  url: z
+    .string({ required_error: "URL is required." })
+    .url({ message: "Please enter a valid URL" })
+    .trim()
+    .max(1024, { message: "URL cannot be longer than 1024 characters." }),
 
   shortCode: z
-    .string()
+    .string({ required_error: "Short code is requires." })
     .trim()
-    .min(3, "Short code must be at least 3 characters")
-    .max(20, "Short code must not exceed 20 characters")
-    .regex(
-      /^[a-zA-Z0-9_-]+$/,
-      "Short code can only contain letters, numbers, hyphens, and underscores",
-    ),
+    .min(2, "Short code must be at least 2 characters lomg.")
+    .max(50, "Short code cannot  be lomger than  50 characters"),
 });

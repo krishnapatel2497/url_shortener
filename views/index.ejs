@@ -73,38 +73,84 @@
                         : link.url;
             %>
 
-            <li>
-                <a
-                    href="/<%= link.shortCode %>"
-                    target="_blank"
-                >
-                    <%= host %>/<%= link.shortCode %>
-                </a>
+           <li class="short-url-item">
+    <div class="short-url-info">
+        <a
+            href="/<%= link.shortCode %>"
+            target="_blank"
+        >
+            <%= host %>/<%= link.shortCode %>
+        </a>
 
-                - <%= truncatedURL %>
-            </li>
+        <span>- <%= truncatedURL %></span>
+    </div>
 
-        <% }) %>
+    <div class="short-url-actions">
+
+        <!-- Copy Button -->
+        <button
+            type="button"
+            class="action-btn copy-btn"
+            data-url="<%= host %>/<%= link.shortCode %>"
+            title="Copy short URL"
+        >
+             <i class="fa-solid fa-link"></i>
+        </button>
+
+        <!-- Edit Button -->
+        <a
+            href="/shortener/edit/<%= link._id %>"
+            class="action-btn edit-btn"
+            title="Edit short URL"
+        >
+         <i class="fa-solid fa-pen-to-square"></i>
+        </a>
+
+        <!-- Delete Button -->
+        <form
+            action="/shortener/delete/<%= link._id %>"
+            method="POST"
+            class="delete-form"
+            onsubmit="return confirm('Are you sure you want to delete this short URL?');"
+        >
+            <button
+                type="submit"
+                class="action-btn delete-btn"
+                title="Delete short URL"
+            >
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </form>
+
+    </div>
+</li>
+ <% }) %>
     </ul>
 
 </div>
 
 <script>
-    // const params = new URLSearchParams(window.location.search);
+    document.querySelectorAll(".copy-btn").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const url = button.dataset.url;
+    const icon = button.querySelector("i");
 
-    // if (params.get("success") === "true") {
+    try {
+      await navigator.clipboard.writeText(url);
 
-    //     alert("Form submitted successfully");
+      // Change only the icon
+      icon.classList.remove("fa-link");
+      icon.classList.add("fa-check");
 
-    //     // Remove ?success=true from the URL
-    //     window.history.replaceState(
-    //         {},
-    //         document.title,
-    //         "/"
-    //     );
-    // }
-
-    //already using:req.flash Therefore this is unnecessary:
+      setTimeout(() => {
+        icon.classList.remove("fa-check");
+        icon.classList.add("fa-link");
+      }, 1500);
+    } catch (error) {
+      console.error("Failed to copy URL:", error);
+    }
+  });
+});
 </script>
 
 <%- include('./partials/footer') %>

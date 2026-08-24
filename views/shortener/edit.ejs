@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Edit Short URL</title>
+
+    <link rel="stylesheet" href="/style.css" />
+    
+  </head>
+
+  <body>
+    <%- include("../partials/header", { title: "Edit Short URL" }) %>
+
+   <main class="edit-page">
+    <div class="edit-container">
+      <h1>Edit Short URL</h1>
+
+      <p class="edit-subtitle">
+      Update your original URL or custom short code.
+      </p>
+
+      <% if (errors && errors.length > 0) { %>
+        <div class="alert alert-error">
+          <%= errors[0] %>
+        </div>
+      <% } %>
+
+      <% if (success && success.length > 0) { %>
+        <div class="alert alert-success">
+          <%= success[0] %>
+        </div>
+      <% } %>
+
+      <form
+        action="/shortener/edit/<%= shortLink._id %>"
+        method="POST"
+        class="edit-form"
+      >
+        <div class="form-group">
+          <label for="url">Original URL</label>
+
+          <input
+            type="url"
+            id="url"
+            name="url"
+            value="<%= shortLink.url %>"
+            placeholder="Enter original URL"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="shortCode">Short Code</label>
+
+          <input
+            type="text"
+            id="shortCode"
+            name="shortCode"
+            value="<%= shortLink.shortCode %>"
+            placeholder="Enter short code"
+            required
+          />
+        </div>
+
+         <div class="edit-actions">
+        <button type="submit">
+          Update Short URL
+        </button>
+
+        <a href="/" class="cancel-btn">
+          Cancel
+        </a>
+        </div>
+      </form>
+    </div>
+    </main>
+  </body>
+</html>
