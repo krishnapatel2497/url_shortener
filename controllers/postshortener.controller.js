@@ -57,7 +57,7 @@ export const postURLShortener = async (req, res) => {
     const { url, shortCode } = data;
 
     // Generate random short code if user doesn't provide one
-    const finalShortCode = shortCode || crypto.randomBytes(4).toString("hex"); //shortCode is now required this is no longer necessary : crypto.randomBytes(4).toString("hex");
+    const finalShortCode = shortCode    //|| crypto.randomBytes(4).toString("hex"); //shortCode is now required this is no longer necessary : crypto.randomBytes(4).toString("hex");
 
     // Check whether short code already exists
     const existingLink = await getLinkByShortCode(finalShortCode);
