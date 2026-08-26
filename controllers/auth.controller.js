@@ -1,11 +1,12 @@
 import { userCollection } from "../config/db-client.js";
 //import bcrypt from "bcrypt";
 import argon2 from "argon2";
-import { generateToken } from "../utils/generateToken.js";
+//import { generateToken } from "../utils/generateToken.js";
 import {
   loginUserSchema,
   registerUserSchema,
 } from "../validators/auth-validators.js";
+import { createSession } from "../models/session.model.js";
 
 export const getRegisterPage = (req, res) => {
   if (req.user) return res.redirect("/");
@@ -91,9 +92,6 @@ export const postLogin = async (req, res) => {
     return res.redirect("/login");
   }
 
-  // // Compare entered password with hashed password
-  // const isPasswordCorrect = await bcrypt.compare(password, user.password);
-
   // Compare entered password with Argon2 hash
   const isPasswordCorrect = await argon2.verify(user.password, password);
 
@@ -104,12 +102,43 @@ export const postLogin = async (req, res) => {
 
   //res.cookie("isLoggedIn", true); //set cookie onle one
 
-  const token = generateToken(user._id.toString(), user.name, user.email);
+  //const token = generateToken(user._id.toString(), user.name, user.email);
 
-  res.cookie("access_token", token); // cookie name : access_token
-  res.redirect("/");
+  //res.cookie("access_token", token); // cookie name : access_token
+
+  // 1. Generate unique session ID
+  const sessionId = crypto.randomUUID();
+
+  // 2. Generate Access Token
+  const accessToken = generateAccessToken(user);
+
+  // 3. Generate Refresh Token
+  const refreshToken = generateRefreshToken(user, sessionId);
+
+  const session = await createSession({
+    userId: user._id,
+    sessionId: sessionId,
+    refreshToken: refreshToken,
+    ipAddress: req.ip,
+    userAgent: req.headers["user-agent"],
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  });
+  console.log("Session created:", session);
+
+  res.cookie("access_token", accessToken, {
+    httpOnly: true,
+    secure: false, // true in production with HTTPS
+    sameSite: "lax",
+  });
+
+  res.cookie("refresh_token", refreshToken, {
+    httpOnly: true,
+    secure: false, // true in production with HTTPS
+    sameSite: "lax",
+  });
 };
 
+return res.redirect("/");
 export const getme = (req, res) => {
   if (!req.user) return res.send("Not logged in");
   return res.send(`<h1>Hey ${req.user.name} - ${req.user.email}</h1>`);
