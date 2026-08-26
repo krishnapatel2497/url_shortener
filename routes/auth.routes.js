@@ -18,9 +18,9 @@ router.post("/register", postRegisterPage);
 
 router.post("/refresh", refreshAccessToken);
 
-router.post("/logout", logoutUser);
+//router.post("/logout", logoutUser);
 //or
-//router.get("/logout", logoutUser);
+router.get("/logout", logoutUser);
 
 // Export router
 export const authRoutes = router;
