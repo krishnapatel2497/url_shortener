@@ -1,25 +1,26 @@
 import { Router } from "express";
-import * as authControllers from "../controllers/auth.controller.js";
+import {
+  getLoginPage,
+  postLogin,
+  getRegisterPage,
+  postRegisterPage,
+  refreshAccessToken,
+  logoutUser,
+} from "../controllers/auth.controller.js";
 
 const router = Router();
 
-//router.get("/register", authControllers.getRegisterPage); //getRegisterPage = controllers
+router.get("/login", getLoginPage);
+router.post("/login", postLogin);
 
-router
-  .route("/register")
-  .get(authControllers.getRegisterPage)
-  .post(authControllers.postRegisterPage);
+router.get("/register", getRegisterPage);
+router.post("/register", postRegisterPage);
 
-//router.get("/login", authControllers.getLoginPage); //getLoginPage = controllers
-//router.post("/login", authControllers.postLogin);
+router.post("/refresh", refreshAccessToken);
+
+router.post("/logout", logoutUser);
 //or
-router
-  .route("/login")
-  .get(authControllers.getLoginPage)
-  .post(authControllers.postLogin);
+//router.get("/logout", logoutUser);
 
-router.route("/me").get(authControllers.getme);
-router.route("/logout").get(authControllers.LogoutUser);
-
-
+// Export router
 export const authRoutes = router;

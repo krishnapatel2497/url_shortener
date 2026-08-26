@@ -9,7 +9,7 @@ import {
   redirectToShortLink,
 } from "../controllers/postshortener.controller.js";
 
-import { verifyAuthentication } from "../middleware/authMiddleware.js";
+import { verifyAuthentication } from "../middleware/auth.Middleware.js";
 
 const router = Router();
 
