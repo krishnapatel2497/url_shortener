@@ -8,6 +8,7 @@ import {
   getLinksByUserId,
   saveLinks,
   updateShortLink,
+  incrementClicks,
 } from "../models/shortener.model.js";
 import { shortenerSchema } from "../validators/shortener-validators.js";
 
@@ -57,7 +58,7 @@ export const postURLShortener = async (req, res) => {
     const { url, shortCode } = data;
 
     // Generate random short code if user doesn't provide one
-    const finalShortCode = shortCode    //|| crypto.randomBytes(4).toString("hex"); //shortCode is now required this is no longer necessary : crypto.randomBytes(4).toString("hex");
+    const finalShortCode = shortCode; //|| crypto.randomBytes(4).toString("hex"); //shortCode is now required this is no longer necessary : crypto.randomBytes(4).toString("hex");
 
     // Check whether short code already exists
     const existingLink = await getLinkByShortCode(finalShortCode);
@@ -72,6 +73,8 @@ export const postURLShortener = async (req, res) => {
       url,
       shortCode: finalShortCode,
       userId: new ObjectId(req.user.id),
+      clicks: 0,
+      createdAt: new Date(),
     });
 
     req.flash("success", "Short URL created successfully");
@@ -93,6 +96,9 @@ export const redirectToShortLink = async (req, res) => {
     if (!link) {
       return res.status(404).send("404 - Short URL not found");
     }
+
+    // Increase clicks by 1
+    await incrementClicks(shortCode);
 
     return res.redirect(link.url);
   } catch (error) {

@@ -83,6 +83,7 @@ export const postRegisterPage = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      createdAt: new Date(),
     });
 
     // Create user object
@@ -232,7 +233,6 @@ export const logoutUser = async (req, res) => {
     }
 
     res.clearCookie("access_token");
-
     res.clearCookie("refresh_token");
 
     return res.redirect("/login");

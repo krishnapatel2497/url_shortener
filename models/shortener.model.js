@@ -4,11 +4,11 @@ import { env } from "../config/env.js";
 
 const db = dbclient.db(env.MONGODB_DATABASE_NAME);
 
-const shortenerCollection = db.collection("shorteners");
+export const shortenerCollection = db.collection("shorteners");
 
 // Get all short URLs from MongoDB
 export const loadLinks = async () => {
-  return shortenerCollection.find().toArray();  //Find documents in the collection.
+  return shortenerCollection.find().toArray(); //Find documents in the collection.
 };
 
 // Insert one new short URL into MongoDB
@@ -59,4 +59,19 @@ export const deleteShortLink = async (id, userId) => {
     _id: new ObjectId(id),
     userId: new ObjectId(userId),
   });
+};
+
+// Increment click count when someone visits a short URL
+
+export const incrementClicks = async (shortCode) => {
+  return shortenerCollection.updateOne(
+    {
+      shortCode: shortCode,
+    },
+    {
+      $inc: {
+        clicks: 1,
+      },
+    },
+  );
 };

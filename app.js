@@ -8,6 +8,7 @@ import { authRoutes } from "./routes/auth.routes.js";
 import { dbclient } from "./config/db-client.js";
 import { verifyAuthentication } from "./middleware/auth.Middleware.js";
 import { shortenerRoutes } from "./routes/shortener.routes.js";
+import profileRoutes from "./routes/profile.routes.js";
 
 const app = express();
 
@@ -115,7 +116,7 @@ app.use(verifyAuthentication);
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
-
+  res.locals.currentPath = req.path;
   return next();
 });
 
@@ -124,6 +125,7 @@ app.use((req, res, next) => {
 | Routes
 |--------------------------------------------------------------------------
 */
+app.use("/", profileRoutes);
 
 app.use(authRoutes);
 

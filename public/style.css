@@ -68,7 +68,6 @@ body {
     var(--bg);
 
   min-height: 100vh;
-  padding: 110px 18px 60px;
 
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -111,69 +110,84 @@ a {
   }
 }
 
-/* =========================================
-   NAVBAR
-========================================= */
+/* =========================
+           HEADER
+        ========================= */
+
+.main-header {
+  width: 100%;
+  height: 68px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #0c1218;
+
+  border-bottom: 1px solid #28323c;
+}
 
 .navbar {
-  position: fixed;
-  inset: 0 0 auto 0;
-
   display: flex;
-  justify-content: center;
   align-items: center;
-
-  padding: 16px;
-
-  background: rgba(13, 17, 23, 0.72);
-  backdrop-filter: blur(14px);
-
-  border-bottom: 1px solid var(--border);
-
-  z-index: 1000;
+  gap: 42px;
 }
 
-.navbar-links {
-  display: flex;
-  gap: 8px;
+.navbar a {
+  color: #9ba7b8;
 
-  list-style: none;
-
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.navbar-links a {
-  display: block;
-
-  color: var(--muted);
   text-decoration: none;
 
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 500;
 
-  padding: 9px 16px;
-
-  border-radius: 999px;
-
-  transition: var(--transition);
+  transition: 0.2s ease;
 }
 
-.navbar-links a:hover {
-  color: #04121a;
-
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+.navbar a:hover {
+  color: #ffffff;
 }
 
-.navbar-links a.active {
-  color: #04121a;
-
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+.navbar a.active {
+  color: #ffffff;
 }
 
-.navbar-links a:focus-visible {
-  outline: 2px solid var(--accent-2);
-  outline-offset: 3px;
+/* Logout button */
+
+.logout-form {
+  display: inline;
+  margin: 0;
+}
+
+.logout-button {
+  border: none;
+  background: transparent;
+
+  color: #9ba7b8;
+
+  font-size: 18px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  padding: 0;
+}
+
+.logout-button:hover {
+  color: #ffffff;
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .navbar {
+    gap: 18px;
+  }
+
+  .navbar a,
+  .logout-button {
+    font-size: 14px;
+  }
 }
 
 /* =========================================
@@ -305,7 +319,7 @@ input:focus {
    MAIN BUTTON
 ========================================= */
 
-button:not(.action-btn) {
+button:not(.action-btn):not(.logout-button):not(.profile-button) {
   width: 100%;
 
   padding: 15px;
@@ -327,13 +341,13 @@ button:not(.action-btn) {
   transition: var(--transition);
 }
 
-button:not(.action-btn):hover {
+button:not(.action-btn):not(.logout-button):not(.profile-button):hover {
   transform: translateY(-2px);
 
   box-shadow: 0 14px 30px rgba(56, 189, 248, 0.32);
 }
 
-button:not(.action-btn):active {
+button:not(.action-btn):not(.logout-button):not(.profile-button):active {
   transform: scale(0.985);
 }
 
@@ -1105,6 +1119,354 @@ ul {
   color: var(--muted);
 
   line-height: 1.8;
+}
+
+/* ==========================
+       PROFILE PAGE
+    ========================== */
+
+.profile-page {
+  width: 100%;
+
+  max-width: 900px;
+
+  margin: 0 auto;
+
+  padding: 45px 20px 60px;
+}
+
+.profile-title {
+  text-align: center;
+
+  color: #ffffff;
+
+  font-size: 25px;
+
+  margin-bottom: 25px;
+}
+
+/* ==========================
+       LOGIN STATUS
+    ========================== */
+
+.login-status {
+  width: 100%;
+
+  padding: 11px 15px;
+
+  margin-bottom: 12px;
+
+  border-radius: 4px;
+
+  background: #14352f;
+
+  color: #6ee7b7;
+
+  font-size: 14px;
+}
+
+.status-dot {
+  display: inline-block;
+
+  width: 8px;
+
+  height: 8px;
+
+  margin-right: 6px;
+
+  border-radius: 50%;
+
+  background: #34d399;
+}
+
+/* ==========================
+       PROFILE CARD
+    ========================== */
+
+.profile-card {
+  width: 100%;
+
+  background: #171d24;
+
+  border: 1px solid #303943;
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* ==========================
+       PROFILE HEADER
+    ========================== */
+
+.profile-card-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 40px;
+
+  padding: 20px;
+
+  background: linear-gradient(135deg, #159fd4, #2468c7);
+}
+
+.avatar {
+  width: 90px;
+
+  height: 90px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  border: 3px solid rgba(255, 255, 255, 0.55);
+
+  background: #e9f7ff;
+
+  color: #1b83c7;
+
+  font-size: 38px;
+
+  font-weight: 600;
+}
+
+.profile-info h2 {
+  color: #ffffff;
+
+  font-size: 24px;
+
+  margin-bottom: 8px;
+
+  margin-top: 8px;
+
+  text-transform: uppercase;
+}
+
+.profile-info p {
+  color: #e4f4ff;
+
+  font-size: 14px;
+
+  margin-bottom: 5px;
+}
+
+.member-date {
+  opacity: 0.85;
+}
+
+/* ==========================
+       STATISTICS
+    ========================== */
+
+.profile-stats {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  background: #171d24;
+
+  border-bottom: 1px solid #303943;
+}
+
+.stat {
+  padding: 25px 10px;
+
+  text-align: center;
+}
+
+.stat strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-size: 22px;
+
+  margin-bottom: 7px;
+}
+
+.stat span {
+  display: block;
+
+  color: #7f8b9b;
+
+  font-size: 11px;
+
+  letter-spacing: 0.5px;
+}
+
+/* ==========================
+       VERIFICATION
+    ========================== */
+
+.verification {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 20px 25px;
+
+  color: #c5ced9;
+
+  font-size: 14px;
+
+  flex-wrap: wrap;
+}
+
+.not-verified {
+  color: #f87171;
+
+  background: #341b20;
+
+  padding: 5px 10px;
+
+  border-radius: 20px;
+
+  font-size: 12px;
+}
+
+.verify-button {
+  border: none;
+
+  border-radius: 20px;
+
+  padding: 7px 15px;
+
+  background: #2196d2;
+
+  color: white;
+
+  cursor: pointer;
+
+  font-size: 12px;
+}
+
+.verify-button:hover {
+  opacity: 0.85;
+}
+
+/* ==========================
+       ACTION BUTTONS
+    ========================== */
+
+.profile-actions {
+  display: flex;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-top: 18px;
+
+  flex-wrap: wrap;
+}
+
+.profile-actions form {
+  margin: 0;
+}
+
+.profile-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 180px;
+
+  padding: 12px 18px;
+
+  border: none;
+
+  border-radius: 5px;
+
+  background: linear-gradient(90deg, #57dcb5, #29abe2);
+
+  color: #07121b;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.profile-button:hover {
+  transform: translateY(-1px);
+
+  opacity: 0.9;
+}
+
+/* ==========================
+       NOT LOGGED IN
+    ========================== */
+
+.not-logged-in {
+  text-align: center;
+
+  padding: 50px;
+
+  background: #171d24;
+
+  border: 1px solid #303943;
+
+  border-radius: 12px;
+}
+
+.not-logged-in h2 {
+  color: white;
+
+  margin-bottom: 20px;
+}
+
+.not-logged-in a {
+  color: #36b9ed;
+
+  text-decoration: none;
+}
+
+/* ==========================
+       MOBILE
+    ========================== */
+
+@media (max-width: 600px) {
+  .profile-card-header {
+    flex-direction: column;
+
+    text-align: center;
+  }
+
+  .profile-info h2 {
+    font-size: 19px;
+  }
+
+  .profile-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .stat {
+    border-bottom: 1px solid #303943;
+  }
+
+  .profile-button {
+    width: 100%;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
 }
 
 /* =========================================

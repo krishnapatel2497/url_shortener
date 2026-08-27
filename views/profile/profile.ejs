@@ -1,0 +1,187 @@
+<%- include("../partials/header") %>
+
+
+<main class="profile-page">
+
+    <h1 class="profile-title">
+        Your Profile
+    </h1>
+
+
+    <% if (user) { %>
+
+        <div class="login-status">
+            <span class="status-dot"></span>
+
+            You are logged in
+        </div>
+
+
+        <section class="profile-card">
+
+            <!-- Profile Header -->
+
+            <div class="profile-card-header">
+
+                <div class="avatar">
+
+                    <%= profileUser.name
+                        .charAt(0)
+                        .toUpperCase() %>
+
+                </div>
+
+
+                <div class="profile-info">
+
+                    <h2>
+                        <%= profileUser.name %>
+                    </h2>
+
+                    <p>
+                        <%= profileUser.email %>
+                    </p>
+
+                    <p class="member-date">
+
+                        <span>
+                            Member since
+                        </span>
+
+                        <%= profileUser.createdAt
+                            ? new Date(
+                                profileUser.createdAt
+                            ).toLocaleDateString()
+                            : "Recently" %>
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Statistics -->
+
+            <div class="profile-stats">
+
+                <div class="stat">
+
+                    <strong>
+                        <%= linksCreated %>
+                    </strong>
+
+                    <span>
+                        LINKS CREATED
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong>
+                        <%= totalClicks %>
+                    </strong>
+
+                    <span>
+                        TOTAL CLICKS
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong>
+                        Today
+                    </strong>
+
+                    <span>
+                        LAST ACTIVE
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Email Verification -->
+
+            <div class="verification">
+
+                <span>
+                    Email Verification:
+                </span>
+
+                <span class="not-verified">
+                    ● Not Verified
+                </span>
+
+                <button
+                    type="button"
+                    class="verify-button"
+                >
+                    Verify Now
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- Action Buttons -->
+
+        <div class="profile-actions">
+
+            <a
+                href="/profile/edit"
+                class="profile-button"
+            >
+                ✎ Edit Profile
+            </a>
+
+
+            <a
+                href="/change-password"
+                class="profile-button"
+            >
+                ⚿ Change Password
+            </a>
+
+
+            <form
+                action="/logout"
+                method="POST"
+            >
+
+                <button
+                    type="submit"
+                    class="profile-button logout-profile"
+                >
+                    ⏻ Logout
+                </button>
+
+            </form>
+
+        </div>
+
+
+    <% } else { %>
+
+        <div class="not-logged-in">
+
+            <h2>
+                You are not logged in
+            </h2>
+
+            <a href="/login">
+                Login
+            </a>
+
+        </div>
+
+    <% } %>
+
+</main>
+
+
