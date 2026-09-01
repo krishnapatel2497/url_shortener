@@ -1,44 +1,69 @@
 import { userCollection } from "../config/db-client.js";
+
 import { hashToken } from "../utils/token.js";
+
+/*
+|--------------------------------------------------------------------------
+| GET VERIFY EMAIL PAGE
+|--------------------------------------------------------------------------
+*/
+
+export const getVerifyEmailPage = (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.redirect("/register");
+  }
+
+  return res.render("auth/verify-email", {
+    title: "Verify Email",
+    email,
+  });
+};
+
+/*
+|--------------------------------------------------------------------------
+| POST VERIFY EMAIL
+|--------------------------------------------------------------------------
+*/
 
 export const verifyEmail = async (req, res) => {
   try {
     /*
     |--------------------------------------------------------------------------
-    | 1. Get Verification Token From URL
+    | 1. Get Email and Code
     |--------------------------------------------------------------------------
-    |
-    | Example:
-    | http://localhost:3000/verify-email?token=abc123
-    |
     */
 
-    const { token } = req.query;
+    const { email, code } = req.body;
 
     /*
     |--------------------------------------------------------------------------
-    | 2. Check Token
+    | 2. Validate Input
     |--------------------------------------------------------------------------
     */
 
-    if (!token) {
+    if (!email || !code) {
       return res.status(400).render("auth/verify-email", {
-        title: "Email Verification",
-        success: false,
-        message: "Verification token is missing.",
+        title: "Verify Email",
+        email,
+        error: "Email and verification code are required.",
       });
     }
 
     /*
     |--------------------------------------------------------------------------
-    | 3. Hash Token
+    | 3. Validate 8-Digit Code
     |--------------------------------------------------------------------------
-    | The original token is in the email URL.
-    | MongoDB contains the hashed version.
-    |
     */
 
-    const hashedToken = hashToken(token);
+    if (!/^\d{8}$/.test(code)) {
+      return res.status(400).render("auth/verify-email", {
+        title: "Verify Email",
+        email,
+        error: "Verification code must be exactly 8 digits.",
+      });
+    }
 
     /*
     |--------------------------------------------------------------------------
@@ -47,26 +72,30 @@ export const verifyEmail = async (req, res) => {
     */
 
     const user = await userCollection.findOne({
-      emailVerificationToken: hashedToken,
+      email,
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Check Token Validity
-    |--------------------------------------------------------------------------
-    */
 
     if (!user) {
       return res.status(400).render("auth/verify-email", {
-        title: "Email Verification",
-        success: false,
-        message: "Invalid or already used verification link.",
+        title: "Verify Email",
+        email,
+        error: "User not found.",
       });
     }
 
     /*
     |--------------------------------------------------------------------------
-    | 6. Check Token Expiration
+    | 5. Check Already Verified
+    |--------------------------------------------------------------------------
+    */
+
+    if (user.emailVerified) {
+      return res.redirect("/login");
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 6. Check Expiry
     |--------------------------------------------------------------------------
     */
 
@@ -75,15 +104,37 @@ export const verifyEmail = async (req, res) => {
       user.emailVerificationExpires < new Date()
     ) {
       return res.status(400).render("auth/verify-email", {
-        title: "Email Verification",
-        success: false,
-        message: "Your verification link has expired.",
+        title: "Verify Email",
+        email,
+        error: "Verification code has expired. Please request a new code.",
       });
     }
 
     /*
     |--------------------------------------------------------------------------
-    | 7. Verify Email
+    | 7. Hash Entered Code
+    |--------------------------------------------------------------------------
+    */
+
+    const hashedCode = hashToken(code);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 8. Compare Code
+    |--------------------------------------------------------------------------
+    */
+
+    if (hashedCode !== user.emailVerificationCode) {
+      return res.status(400).render("auth/verify-email", {
+        title: "Verify Email",
+        email,
+        error: "Invalid verification code.",
+      });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 9. Mark Email as Verified
     |--------------------------------------------------------------------------
     */
 
@@ -98,12 +149,12 @@ export const verifyEmail = async (req, res) => {
 
         /*
         |--------------------------------------------------------------------------
-        | Remove Verification Token
+        | Remove Code and Expiry
         |--------------------------------------------------------------------------
         */
 
         $unset: {
-          emailVerificationToken: "",
+          emailVerificationCode: "",
           emailVerificationExpires: "",
         },
       },
@@ -111,22 +162,18 @@ export const verifyEmail = async (req, res) => {
 
     /*
     |--------------------------------------------------------------------------
-    | 8. Show success page/ Redirect to Login
+    | 10. Success
     |--------------------------------------------------------------------------
     */
 
-    return res.render("auth/verify-email", {
-      title: "Email Verification",
-      success: true,
-      message: "Your email has been verified successfully!",
-    });
+    req.flash("success", "Email verified successfully! You can now login.");
+
+    return res.redirect("/login");
   } catch (error) {
     console.error("Email Verification Error:", error);
 
-    return res.status(500).render("auth/verify-email", {
-      title: "Email Verification",
-      success: false,
-      message: "Something went wrong during email verification.",
-    });
+    return res
+      .status(500)
+      .send("Something went wrong during email verification.");
   }
 };

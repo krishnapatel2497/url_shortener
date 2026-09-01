@@ -49,9 +49,9 @@ generateRandomToken
 ---------------------------------------------------------------------------
 */
 
-export const generateRandomToken = () => {
-  return crypto.randomBytes(32).toString("hex");
-};
+// export const generateRandomToken = () => {
+//   return crypto.randomBytes(32).toString("hex");
+// };
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +71,16 @@ export const verifyAccessToken = (token) => {
 
 export const verifyRefreshToken = (token) => {
   return jwt.verify(token, env.JWT_REFRESH_SECRET);
+};
+
+/*
+|--------------------------------------------------------------------------
+| GENERATE 8-DIGIT EMAIL VERIFICATION CODE
+|--------------------------------------------------------------------------
+*/
+
+export const generateEmailVerificationCode = () => {
+  return crypto.randomInt(10000000, 100000000).toString();
 };
 
 /*

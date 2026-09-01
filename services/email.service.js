@@ -1,14 +1,8 @@
-import  transporter  from "../config/mail.js";
+import transporter from "../config/mail.js";
 
-export const sendVerificationEmail = async (
-  email,
-  verificationToken
-) => {
-  const verificationUrl =
-    `http://localhost:3000/verify-email?token=${verificationToken}`;
-
+export const sendVerificationEmail = async (email, verificationCode) => {
   await transporter.sendMail({
-    from: process.env.EMAIL_USER,
+    from: process.env.MAIL_USER,
     to: email,
     subject: "Verify your email address",
 
@@ -18,22 +12,13 @@ export const sendVerificationEmail = async (
 
         <p>
           Thank you for registering.
-          Please verify your email address by clicking the button below.
+          Please use the verification code below
+          to verify your email address.
         </p>
 
-        <a
-          href="${verificationUrl}"
-          style="
-            display: inline-block;
-            padding: 12px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-          "
-        >
-          Verify Email
-        </a>
+        <h1 style="letter-spacing: 8px;">
+          ${verificationCode}
+        </h1>
 
         <p>
           This link will expire in 15 minutes.

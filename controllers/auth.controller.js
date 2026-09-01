@@ -17,7 +17,8 @@ import {
 import {
   verifyRefreshToken,
   generateAccessToken,
-  generateRandomToken,
+  //generateRandomToken,
+  generateEmailVerificationCode,
   hashToken,
 } from "../utils/token.js";
 
@@ -108,7 +109,8 @@ export const postRegisterPage = async (req, res) => {
     |--------------------------------------------------------------------------
     */
 
-    const verificationToken = generateRandomToken();
+    //const verificationToken = generateRandomToken();
+    const verificationCode = generateEmailVerificationCode();
 
     /*
     |--------------------------------------------------------------------------
@@ -120,7 +122,7 @@ export const postRegisterPage = async (req, res) => {
     |
     */
 
-    const hashedVerificationToken = hashToken(verificationToken);
+    const hashedVerificationToken = hashToken(verificationCode);
 
     /*
     |--------------------------------------------------------------------------
@@ -146,7 +148,7 @@ export const postRegisterPage = async (req, res) => {
 
       // Email verification information
       emailVerified: false,
-      emailVerificationToken: hashedVerificationToken,
+      emailVerificationCode: hashedVerificationToken,
       emailVerificationExpires,
 
       createdAt: new Date(),
@@ -158,7 +160,7 @@ export const postRegisterPage = async (req, res) => {
     |--------------------------------------------------------------------------
     */
 
-    await sendVerificationEmail(email, verificationToken);
+    await sendVerificationEmail(email, verificationCode);
 
     /*
     |--------------------------------------------------------------------------
@@ -171,10 +173,10 @@ export const postRegisterPage = async (req, res) => {
 
     req.flash(
       "success",
-      "Registration successful! Please check your email and verify your account.",
+      "Registration successful! Check your email for the 8-digit verification code.",
     );
 
-    return res.redirect("/login");
+    return res.redirect(`/verify-email?email=${encodeURIComponent(email)}`);
   } catch (error) {
     console.error("Registration Error:", error);
 
@@ -544,7 +546,3 @@ export const refreshAccessToken = async (req, res) => {
     });
   }
 };
-
-
-
-

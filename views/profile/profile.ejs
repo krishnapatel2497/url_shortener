@@ -105,7 +105,6 @@
             </div>
 
 
-            <!-- Email Verification -->
 
        <!-- Email Verification -->
 
@@ -127,12 +126,12 @@
             ● Not Verified
         </span>
 
-        <button
-            type="button"
+         <a
+            href="/verify-email?email=<%= encodeURIComponent(profileUser.email) %>"
             class="verify-button"
         >
             Verify Now
-        </button>
+        </a>
 
     <% } %>
 
