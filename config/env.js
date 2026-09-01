@@ -8,8 +8,10 @@ export const env = {
   MONGODB_DATABASE_NAME: process.env.MONGODB_DATABASE_NAME,
 
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
-
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
+
+  MAIL_USER: process.env.MAIL_USER,
+  MAIL_PASS: process.env.MAIL_PASS,
 };
 
 // export const env1 = z

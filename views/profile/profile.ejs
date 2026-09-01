@@ -107,24 +107,36 @@
 
             <!-- Email Verification -->
 
-            <div class="verification">
+       <!-- Email Verification -->
 
-                <span>
-                    Email Verification:
-                </span>
+<div class="verification">
 
-                <span class="not-verified">
-                    ● Not Verified
-                </span>
+    <span>
+        Email Verification:
+    </span>
 
-                <button
-                    type="button"
-                    class="verify-button"
-                >
-                    Verify Now
-                </button>
+    <% if (profileUser.emailVerified) { %>
 
-            </div>
+        <span class="verified">
+            ● Verified
+        </span>
+
+    <% } else { %>
+
+        <span class="not-verified">
+            ● Not Verified
+        </span>
+
+        <button
+            type="button"
+            class="verify-button"
+        >
+            Verify Now
+        </button>
+
+    <% } %>
+
+</div>
 
         </section>
 

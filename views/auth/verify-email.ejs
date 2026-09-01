@@ -1,0 +1,53 @@
+<%- include("../partials/header") %>
+
+<main class="verify-page">
+
+    <section class="verify-card">
+
+        <% if (success) { %>
+
+            <div class="verify-icon success-icon">
+                ✓
+            </div>
+
+            <h1>
+                Email Verified!
+            </h1>
+
+            <p>
+                <%= message %>
+            </p>
+
+            <a
+                href="/login"
+                class="verify-button"
+            >
+                Continue to Login
+            </a>
+
+        <% } else { %>
+
+            <div class="verify-icon error-icon">
+                !
+            </div>
+
+            <h1>
+                Verification Failed
+            </h1>
+
+            <p>
+                <%= message %>
+            </p>
+
+            <a
+                href="/login"
+                class="verify-button"
+            >
+                Go to Login
+            </a>
+
+        <% } %>
+
+    </section>
+
+</main>
