@@ -10,6 +10,7 @@ import { verifyAuthentication } from "./middleware/auth.Middleware.js";
 import { shortenerRoutes } from "./routes/shortener.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import verificationRoutes from "./routes/verification.routes.js";
+import emailRoutes from "./routes/email.routes.js";
 
 const app = express();
 
@@ -127,6 +128,8 @@ app.use((req, res, next) => {
 |--------------------------------------------------------------------------
 */
 app.use("/", profileRoutes);
+
+app.use("/", emailRoutes);
 
 app.use("/", verificationRoutes);
 

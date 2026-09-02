@@ -12,7 +12,32 @@ export const env = {
 
   MAIL_USER: process.env.MAIL_USER,
   MAIL_PASS: process.env.MAIL_PASS,
+
+  ETHEREAL_HOST: process.env.ETHEREAL_HOST,
+  ETHEREAL_PORT: process.env.ETHEREAL_PORT,
+  ETHEREAL_USER: process.env.ETHEREAL_USER,
+  ETHEREAL_PASS: process.env.ETHEREAL_PASS, 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // export const env1 = z
 //   .object({
