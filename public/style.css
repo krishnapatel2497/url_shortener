@@ -1138,9 +1138,9 @@ ul {
 .profile-title {
   text-align: center;
 
-  color: #ffffff;
+  color: linear-gradient(90deg, #57dcb5, #29abe2);
 
-  font-size: 25px;
+  font-size: 26px;
 
   margin-bottom: 25px;
 }
@@ -1409,6 +1409,225 @@ ul {
   opacity: 0.9;
 }
 
+/* =========================
+   EDIT PROFILE PAGE
+========================= */
+
+.edit-profile-form {
+  width: 100%;
+  max-width: 650px;
+  margin: 30px auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* =========================
+   FORM GROUP
+========================= */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #e8eeee;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.form-group input {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 13px 15px;
+
+  border: 1px solid #374151;
+  border-radius: 8px;
+
+  background: #1f2933;
+  color: #f5f7f7;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.form-group input:hover {
+  border-color: #4b5563;
+}
+
+.form-group input:focus {
+  border-color: #57dcb5;
+
+  background: #202b35;
+
+  box-shadow: 0 0 0 3px rgba(87, 220, 181, 0.12);
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.edit-profile-form .profile-actions {
+  width: 100%;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 5px;
+}
+
+.edit-profile-form .profile-button {
+  min-width: 130px;
+
+  padding: 12px 20px;
+
+  border: none;
+  border-radius: 8px;
+
+  text-align: center;
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* =========================
+   SAVE BUTTON
+========================= */
+
+.edit-profile-form button.profile-button {
+  background: linear-gradient(90deg, #57dcb5, #29abe2);
+
+  color: #ffffff;
+
+  box-shadow: 0 4px 12px rgba(41, 171, 226, 0.15);
+}
+
+.edit-profile-form button.profile-button:hover {
+  background: linear-gradient(90deg, #3fc39c, #238fc0);
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 6px 16px rgba(41, 171, 226, 0.22);
+}
+
+.edit-profile-form button.profile-button:active {
+  transform: translateY(0);
+}
+
+/* =========================
+   CANCEL BUTTON
+========================= */
+
+.edit-profile-form a.profile-button {
+  background: #2b333c;
+  color: #e5e7eb;
+
+  border: 1px solid #414b56;
+}
+
+.edit-profile-form a.profile-button:hover {
+  background: #343e49;
+  color: #ffffff;
+
+  border-color: #566270;
+
+  transform: translateY(-1px);
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+  .edit-profile-form {
+    max-width: 100%;
+    gap: 20px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+  }
+
+  .form-group input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .edit-profile-form .profile-actions {
+    justify-content: stretch;
+  }
+
+  .edit-profile-form .profile-button {
+    flex: 1;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .edit-profile-form {
+    gap: 18px;
+  }
+
+  .form-group {
+    gap: 6px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input {
+    padding: 11px 12px;
+    font-size: 14px;
+    border-radius: 7px;
+  }
+
+  .edit-profile-form .profile-actions {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .edit-profile-form .profile-button {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+  }
+}
 /* ==========================
        NOT LOGGED IN
     ========================== */
