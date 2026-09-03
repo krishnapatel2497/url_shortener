@@ -7,7 +7,30 @@ import { env } from "../config/env.js";
 // SEND VERIFICATION EMAIL
 // --------------------------------------------------
 
-export const sendVerificationEmail = async (email, verificationCode) => {
+export const sendVerificationEmail = async (
+  email,
+  verificationCode,
+  verificationToken,
+) => {
+  /*
+  |------------------------------------------------------------------
+  | Create Verification URL
+  |------------------------------------------------------------------
+  */
+
+  const verificationUrl = new URL(
+    "/verify-email/link",
+    env.APP_URL || "http://localhost:3000",
+  );
+
+  verificationUrl.searchParams.set("token", verificationToken);
+
+  /*
+  |------------------------------------------------------------------
+  | Send Email
+  |------------------------------------------------------------------
+  */
+
   const info = await transporter.sendMail({
     from: `"URL Shortener" <${env.ETHEREAL_USER}>`,
 
@@ -15,34 +38,94 @@ export const sendVerificationEmail = async (email, verificationCode) => {
 
     subject: "Verify Your Email",
 
+    /*
+    |----------------------------------------------------------------
+    | Plain Text Email
+    |----------------------------------------------------------------
+    */
+
     text: `
+Thank you for registering with URL Shortener.
+
 Your email verification code is:
 
 ${verificationCode}
 
-This code will expire in 15 minutes.
+You can also verify your email by clicking this link:
+
+${verificationUrl.toString()}
+
+This code and verification link will expire in 15 minutes.
 `,
 
+    /*
+    |----------------------------------------------------------------
+    | HTML Email
+    |----------------------------------------------------------------
+    */
+
     html: `
-      <div style="font-family: Arial, sans-serif;">
+      <div
+        style="
+          font-family: Arial, sans-serif;
+          max-width: 600px;
+          margin: auto;
+          padding: 20px;
+        "
+      >
 
         <h2>Verify Your Email</h2>
 
         <p>
-          Thank you for registering.
+          Thank you for registering with
+          <strong>URL Shortener</strong>.
         </p>
 
         <p>
           Your email verification code is:
         </p>
 
-        <h1 style="letter-spacing: 8px;">
+        <h1
+          style="
+            letter-spacing: 8px;
+            background: #f4f4f4;
+            padding: 15px;
+            text-align: center;
+          "
+        >
           ${verificationCode}
         </h1>
 
         <p>
-          This code will expire in
+          Or you can verify your email by clicking the button below:
+        </p>
+
+        <div style="margin: 25px 0;">
+
+          <a
+            href="${verificationUrl.toString()}"
+            style="
+              display: inline-block;
+              padding: 12px 20px;
+              background: #007bff;
+              color: white;
+              text-decoration: none;
+              border-radius: 5px;
+            "
+          >
+            Verify Email
+          </a>
+
+        </div>
+
+        <p>
+          This verification code and link will expire in
           <strong>15 minutes.</strong>
+        </p>
+
+        <p>
+          If you did not create this account, you can safely ignore
+          this email.
         </p>
 
       </div>
@@ -50,6 +133,8 @@ This code will expire in 15 minutes.
   });
 
   console.log("Verification email sent.");
+
+  console.log("Verification URL:", verificationUrl.toString());
 
   console.log("Preview URL:", nodemailer.getTestMessageUrl(info));
 };

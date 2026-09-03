@@ -84,6 +84,15 @@ export const generateEmailVerificationCode = () => {
 };
 
 /*
+|---------------------------------------------------------------------------
+| GENERATE EMAIL VERIFICATION LINK TOKEN
+|---------------------------------------------------------------------------
+*/
+
+export const generateEmailVerificationToken = () => {
+  return crypto.randomBytes(32).toString("hex");
+};
+/*
 |--------------------------------------------------------------------------
 | Hash Refresh Token
 |--------------------------------------------------------------------------

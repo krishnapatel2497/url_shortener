@@ -17,8 +17,8 @@ import {
 import {
   verifyRefreshToken,
   generateAccessToken,
-  //generateRandomToken,
   generateEmailVerificationCode,
+  generateEmailVerificationToken,
   hashToken,
 } from "../utils/token.js";
 
@@ -62,7 +62,6 @@ export const postRegisterPage = async (req, res) => {
 
     const { data, error } = registerUserSchema.safeParse(req.body);
 
-    // Validation failed
     if (error) {
       const errors = error.issues[0].message;
 
@@ -105,39 +104,61 @@ export const postRegisterPage = async (req, res) => {
 
     /*
     |--------------------------------------------------------------------------
-    | 5. Generate Email Verification Token
+    | 5. Generate 8-Digit Verification Code
     |--------------------------------------------------------------------------
     */
 
-    //const verificationToken = generateRandomToken();
     const verificationCode = generateEmailVerificationCode();
 
     /*
     |--------------------------------------------------------------------------
-    | 6. Hash Verification Token
+    | 6. Generate Verification Link Token
+    |--------------------------------------------------------------------------
+    */
+
+    const verificationToken = generateEmailVerificationToken();
+
+    /*
+    |--------------------------------------------------------------------------
+    | 7. Hash Verification Code
     |--------------------------------------------------------------------------
     |
-    | We send the original token to the user,
+    | We send the original code to the user,
+    | but store only the hashed code in MongoDB.
+    |
+    |--------------------------------------------------------------------------
+    */
+
+    const hashedCode = hashToken(verificationCode);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 8. Hash Verification Link Token
+    |--------------------------------------------------------------------------
+    |
+    | We send the original token in Gmail link,
     | but store only the hashed token in MongoDB.
     |
+    |--------------------------------------------------------------------------
     */
 
-    const hashedVerificationToken = hashToken(verificationCode);
+    const hashedToken = hashToken(verificationToken);
 
     /*
     |--------------------------------------------------------------------------
-    | 7. Set Token Expiration
+    | 9. Set Verification Expiration
     |--------------------------------------------------------------------------
     |
-    | Verification link will expire after 15 minutes.
+    | Both code and link expire after 15 minutes.
     |
+    |--------------------------------------------------------------------------
     */
 
-    const emailVerificationExpires = new Date(Date.now() + 15 * 60 * 1000);
+    const verificationExpires = new Date(Date.now() + 15 * 60 * 1000);
 
     /*
     |--------------------------------------------------------------------------
-    | 8. Store User in MongoDB
+    | 10. Store User in MongoDB
     |--------------------------------------------------------------------------
     */
 
@@ -146,35 +167,55 @@ export const postRegisterPage = async (req, res) => {
       email,
       password: hashedPassword,
 
-      // Email verification information
       emailVerified: false,
-      emailVerificationCode: hashedVerificationToken,
-      emailVerificationExpires,
+
+      // Hashed 8-digit code
+      emailVerificationCode: hashedCode,
+
+      // Hashed link token
+      emailVerificationToken: hashedToken,
+
+      // Expiry for both
+      emailVerificationExpires: verificationExpires,
 
       createdAt: new Date(),
     });
 
     /*
     |--------------------------------------------------------------------------
-    | 9. Send Verification Email
+    | 11. Send Verification Email
+    |--------------------------------------------------------------------------
+    |
+    | Send BOTH:
+    |
+    | 1. 8-digit verification code
+    | 2. Clickable verification link
+    |
     |--------------------------------------------------------------------------
     */
 
-    await sendVerificationEmail(email, verificationCode);
+    await sendVerificationEmail(email, verificationCode, verificationToken);
 
     /*
     |--------------------------------------------------------------------------
-    | 10. Don't Login User Yet
+    | 12. Don't Login User Yet
     |--------------------------------------------------------------------------
     |
     | User must verify email first.
     |
+    |--------------------------------------------------------------------------
     */
 
     req.flash(
       "success",
-      "Registration successful! Check your email for the 8-digit verification code.",
+      "Registration successful! Check your email to verify your account.",
     );
+
+    /*
+    |--------------------------------------------------------------------------
+    | 13. Redirect to Verification Page
+    |--------------------------------------------------------------------------
+    */
 
     return res.redirect(`/verify-email?email=${encodeURIComponent(email)}`);
   } catch (error) {
@@ -193,7 +234,6 @@ export const postRegisterPage = async (req, res) => {
 */
 
 export const getLoginPage = (req, res) => {
-  // If user is already logged in
   if (req.user) {
     return res.redirect("/");
   }
@@ -211,7 +251,6 @@ export const getLoginPage = (req, res) => {
 */
 
 export const postLogin = async (req, res) => {
-  // If user is already logged in
   if (req.user) {
     return res.redirect("/");
   }
@@ -225,7 +264,6 @@ export const postLogin = async (req, res) => {
 
     const { data, error } = loginUserSchema.safeParse(req.body);
 
-    // Validation failed
     if (error) {
       const errors = error.issues[0].message;
 
@@ -244,19 +282,13 @@ export const postLogin = async (req, res) => {
 
     /*
     |--------------------------------------------------------------------------
-    | 3. Find User by Email
+    | 3. Find User
     |--------------------------------------------------------------------------
     */
 
     const user = await userCollection.findOne({
       email,
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | 4. User Doesn't Exist
-    |--------------------------------------------------------------------------
-    */
 
     if (!user) {
       req.flash("errors", "Invalid Email or Password");
@@ -266,17 +298,11 @@ export const postLogin = async (req, res) => {
 
     /*
     |--------------------------------------------------------------------------
-    | 5. Verify Password
+    | 4. Verify Password
     |--------------------------------------------------------------------------
     */
 
     const isPasswordCorrect = await argon2.verify(user.password, password);
-
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Password Incorrect
-    |--------------------------------------------------------------------------
-    */
 
     if (!isPasswordCorrect) {
       req.flash("errors", "Invalid Email or Password");
@@ -286,7 +312,7 @@ export const postLogin = async (req, res) => {
 
     /*
     |--------------------------------------------------------------------------
-    | 7. Check Email Verification
+    | 5. Check Email Verification
     |--------------------------------------------------------------------------
     */
 
@@ -298,7 +324,7 @@ export const postLogin = async (req, res) => {
 
     /*
     |--------------------------------------------------------------------------
-    | 8. Create Authentication Session
+    | 6. Create Authentication Session
     |--------------------------------------------------------------------------
     */
 
@@ -306,7 +332,7 @@ export const postLogin = async (req, res) => {
 
     /*
     |--------------------------------------------------------------------------
-    | 9. Set Authentication Cookies
+    | 7. Set Authentication Cookies
     |--------------------------------------------------------------------------
     */
 
@@ -314,7 +340,7 @@ export const postLogin = async (req, res) => {
 
     /*
     |--------------------------------------------------------------------------
-    | 10. Login Successful
+    | 8. Login Successful
     |--------------------------------------------------------------------------
     */
 
@@ -335,12 +361,10 @@ export const postLogin = async (req, res) => {
 */
 
 export const getme = (req, res) => {
-  // User is not logged in
   if (!req.user) {
     return res.send("Not logged in");
   }
 
-  // User is logged in
   return res.send(`<h1>Hey ${req.user.name} - ${req.user.email}</h1>`);
 };
 
@@ -352,19 +376,7 @@ export const getme = (req, res) => {
 
 export const logoutUser = async (req, res) => {
   try {
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Get Refresh Token
-    |--------------------------------------------------------------------------
-    */
-
     const refreshToken = req.cookies.refresh_token;
-
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Delete Session
-    |--------------------------------------------------------------------------
-    */
 
     if (refreshToken) {
       try {
@@ -376,21 +388,9 @@ export const logoutUser = async (req, res) => {
       }
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Clear Cookies
-    |--------------------------------------------------------------------------
-    */
-
     res.clearCookie("access_token");
 
     res.clearCookie("refresh_token");
-
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Redirect to Login
-    |--------------------------------------------------------------------------
-    */
 
     return res.redirect("/login");
   } catch (error) {
@@ -408,12 +408,6 @@ export const logoutUser = async (req, res) => {
 
 export const refreshAccessToken = async (req, res) => {
   try {
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Get Refresh Token
-    |--------------------------------------------------------------------------
-    */
-
     const refreshToken = req.cookies.refresh_token;
 
     if (!refreshToken) {
@@ -422,27 +416,9 @@ export const refreshAccessToken = async (req, res) => {
       });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Verify Refresh Token
-    |--------------------------------------------------------------------------
-    */
-
     const decoded = verifyRefreshToken(refreshToken);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Get Session ID
-    |--------------------------------------------------------------------------
-    */
-
     const sessionId = decoded.sessionId;
-
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Find Session
-    |--------------------------------------------------------------------------
-    */
 
     const session = await getSessionById(sessionId);
 
@@ -452,31 +428,13 @@ export const refreshAccessToken = async (req, res) => {
       });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Hash Refresh Token
-    |--------------------------------------------------------------------------
-    */
-
     const refreshTokenHash = hashToken(refreshToken);
-
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Compare Refresh Token
-    |--------------------------------------------------------------------------
-    */
 
     if (refreshTokenHash !== session.refreshTokenHash) {
       return res.status(401).json({
         message: "Invalid refresh token",
       });
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 7. Find User
-    |--------------------------------------------------------------------------
-    */
 
     const user = await userCollection.findOne({
       _id: session.userId,
@@ -488,39 +446,15 @@ export const refreshAccessToken = async (req, res) => {
       });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Check Email Verification
-    |--------------------------------------------------------------------------
-    */
-
     if (!user.emailVerified) {
       return res.status(403).json({
         message: "Email is not verified",
       });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 9. Generate New Access Token
-    |--------------------------------------------------------------------------
-    */
-
-    const newAccessToken = generateAccessToken(user);
-
-    /*
-    |--------------------------------------------------------------------------
-    | 10. Update Session
-    |--------------------------------------------------------------------------
-    */
+    const newAccessToken = generateAccessToken(user, sessionId);
 
     await updateSessionLastUsed(sessionId);
-
-    /*
-    |--------------------------------------------------------------------------
-    | 11. Set New Access Token Cookie
-    |--------------------------------------------------------------------------
-    */
 
     res.cookie("access_token", newAccessToken, {
       httpOnly: true,
@@ -528,12 +462,6 @@ export const refreshAccessToken = async (req, res) => {
       sameSite: "lax",
       maxAge: 15 * 60 * 1000,
     });
-
-    /*
-    |--------------------------------------------------------------------------
-    | 12. Send Response
-    |--------------------------------------------------------------------------
-    */
 
     return res.json({
       message: "Access token refreshed",

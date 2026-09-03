@@ -11,6 +11,12 @@ import { hashToken } from "../utils/token.js";
 export const getVerifyEmailPage = (req, res) => {
   const { email } = req.query;
 
+  /*
+  |--------------------------------------------------------------------------
+  | If Email Is Not Available
+  |--------------------------------------------------------------------------
+  */
+
   if (!email) {
     return res.redirect("/register");
   }
@@ -23,7 +29,7 @@ export const getVerifyEmailPage = (req, res) => {
 
 /*
 |--------------------------------------------------------------------------
-| POST VERIFY EMAIL
+| POST VERIFY EMAIL USING 8-DIGIT CODE
 |--------------------------------------------------------------------------
 */
 
@@ -149,12 +155,13 @@ export const verifyEmail = async (req, res) => {
 
         /*
         |--------------------------------------------------------------------------
-        | Remove Code and Expiry
+        | Remove Verification Data
         |--------------------------------------------------------------------------
         */
 
         $unset: {
           emailVerificationCode: "",
+          emailVerificationToken: "",
           emailVerificationExpires: "",
         },
       },
@@ -171,6 +178,151 @@ export const verifyEmail = async (req, res) => {
     return res.redirect("/login");
   } catch (error) {
     console.error("Email Verification Error:", error);
+
+    return res
+      .status(500)
+      .send("Something went wrong during email verification.");
+  }
+};
+
+/*
+|--------------------------------------------------------------------------
+| GET VERIFY EMAIL BY GMAIL LINK
+|--------------------------------------------------------------------------
+|
+| Example:
+|
+| http://localhost:3000/verify-email/link?token=abc123
+|
+|--------------------------------------------------------------------------
+*/
+
+export const verifyEmailByLink = async (req, res) => {
+  try {
+    /*
+    |--------------------------------------------------------------------------
+    | 1. Get Token From URL
+    |--------------------------------------------------------------------------
+    */
+
+    const { token } = req.query;
+
+    /*
+    |--------------------------------------------------------------------------
+    | 2. Validate Token
+    |--------------------------------------------------------------------------
+    */
+
+    if (!token) {
+      return res.status(400).send("Invalid verification link.");
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 3. Hash Token
+    |--------------------------------------------------------------------------
+    |
+    | We hash the token received from Gmail.
+    |
+    | Gmail:
+    | Original Token
+    |        ↓
+    | Hash
+    |        ↓
+    | Compare with MongoDB
+    |
+    |--------------------------------------------------------------------------
+    */
+
+    const hashedToken = hashToken(token);
+
+    /*
+    |--------------------------------------------------------------------------
+    | 4. Find User Using Hashed Token
+    |--------------------------------------------------------------------------
+    */
+
+    const user = await userCollection.findOne({
+      emailVerificationToken: hashedToken,
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | 5. Token Not Found
+    |--------------------------------------------------------------------------
+    */
+
+    if (!user) {
+      return res.status(400).send("Invalid or expired verification link.");
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 6. Check Already Verified
+    |--------------------------------------------------------------------------
+    */
+
+    if (user.emailVerified) {
+      return res.redirect("/login");
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 7. Check Token Expiry
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+      !user.emailVerificationExpires ||
+      user.emailVerificationExpires < new Date()
+    ) {
+      return res
+        .status(400)
+        .send(
+          "Verification link has expired. Please request a new verification link.",
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | 8. Mark Email as Verified
+    |--------------------------------------------------------------------------
+    */
+
+    await userCollection.updateOne(
+      {
+        _id: user._id,
+      },
+      {
+        $set: {
+          emailVerified: true,
+        },
+
+        /*
+        |--------------------------------------------------------------------------
+        | Remove Verification Data
+        |--------------------------------------------------------------------------
+        */
+
+        $unset: {
+          emailVerificationCode: "",
+          emailVerificationToken: "",
+          emailVerificationExpires: "",
+        },
+      },
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | 9. Success
+    |--------------------------------------------------------------------------
+    */
+
+    req.flash("success", "Email verified successfully! You can now login.");
+
+    return res.redirect("/login");
+  } catch (error) {
+    console.error("Email Link Verification Error:", error);
 
     return res
       .status(500)
