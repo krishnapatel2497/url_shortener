@@ -4,6 +4,7 @@ import argon2 from "argon2";
 import {
   loginUserSchema,
   registerUserSchema,
+  changePasswordSchema,
 } from "../validators/auth-validators.js";
 
 import { createAuthSession, setAuthCookies } from "../utils/auth.js";
@@ -23,6 +24,7 @@ import {
 } from "../utils/token.js";
 
 import { sendVerificationEmail } from "../services/email.service.js";
+import { getUserById, updateUserPassword } from "../models/user.model.js";
 
 /*
 |--------------------------------------------------------------------------
@@ -397,6 +399,70 @@ export const logoutUser = async (req, res) => {
     console.error(error);
 
     return res.redirect("/login");
+  }
+};
+
+//change password
+
+// Show Change Password Page
+export const changePasswordPage = (req, res) => {
+  res.render("auth/change-password");
+};
+
+// Change Password
+export const changePassword = async (req, res) => {
+  try {
+    // 1. Validate request body
+    const validation = changePasswordSchema.safeParse(req.body);
+
+    if (!validation.success) {
+      return res.status(400).json({
+        success: false,
+        message: validation.error.issues[0].message,
+      });
+    }
+
+    // 2. Get validated data
+    const { currentPassword, newPassword, confirmPassword } = validation.data;
+
+    // 3. Get logged-in user
+    const user = await getUserById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // 4. Verify current password
+    const isPasswordValid = await argon2.verify(user.password, currentPassword);
+
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password is incorrect",
+      });
+    }
+
+    // 5. Hash new password
+    const hashedPassword = await argon2.hash(newPassword);
+
+    // 6. Update password
+    await updateUserPassword(req.user.id, hashedPassword);
+
+    // 7. Success response
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.error("Change Password Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
 };
 

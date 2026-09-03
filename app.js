@@ -55,7 +55,7 @@ app.use(cookieParser());
 | Express Session
 |--------------------------------------------------------------------------
 |
-| Used here for connect-flash messages.
+| Used here for connect-flash messages
 | Authentication itself is handled using JWT + MongoDB sessions.
 |
 */

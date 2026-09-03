@@ -6,7 +6,11 @@ import {
   postRegisterPage,
   refreshAccessToken,
   logoutUser,
+  changePasswordPage,
+  changePassword,
 } from "../controllers/auth.controller.js";
+
+import { verifyAuthentication } from "../middleware/auth.Middleware.js";
 
 const router = Router();
 
@@ -17,6 +21,9 @@ router.get("/register", getRegisterPage);
 router.post("/register", postRegisterPage);
 
 router.post("/refresh", refreshAccessToken);
+
+router.get("/change-password", verifyAuthentication, changePasswordPage);
+router.post("/change-password", verifyAuthentication, changePassword);
 
 //router.get("/logout", logoutUser);
 //or
