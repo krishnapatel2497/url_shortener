@@ -67,19 +67,21 @@ export const registerUserSchema = z.object({
 });
 
 // Change Password Validation
+
 export const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, {
-      message: "Current password is required.",
-    }),
+    currentPassword: z
+      .string()
+      .min(6, "Current password must be at least 6 characters."),
 
-    newPassword: passwordSchema,
+    newPassword: z
+      .string()
+      .min(6, "New password must be at least 6 characters.")
+      .max(100, "Password must be no more than 100 characters."),
 
-    confirmPassword: z.string().min(1, {
-      message: "Please confirm your new password.",
-    }),
+    confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "New passwords do not match.",
+    message: "New password and confirm password must match.",
     path: ["confirmPassword"],
   });

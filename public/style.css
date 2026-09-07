@@ -1566,6 +1566,140 @@ ul {
 }
 
 /* =========================
+   CHANGE PASSWORD PAGE
+========================= */
+
+.change-password-page {
+  width: 100%;
+  max-width: 500px;
+  margin: 25px auto 50px;
+  padding: 42px;
+  box-sizing: border-box;
+
+  background: #1b2027;
+  border: 1px solid #363c44;
+  border-radius: 30px;
+
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+}
+
+/* Page Heading */
+.change-password-page h1 {
+  margin: 0 0 30px;
+  text-align: center;
+
+  font-size: 32px;
+  font-weight: 800;
+  color: #55d6d0;
+}
+
+/* Form */
+.change-password-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Form Group */
+.change-password-page .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Labels */
+.change-password-page label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e5e7eb;
+  text-transform: uppercase;
+}
+
+/* Inputs */
+.change-password-page input {
+  width: 100%;
+  padding: 15px;
+
+  box-sizing: border-box;
+
+  background: #202b37;
+  color: #f1f5f9;
+
+  border: 1px solid #3a4a5b;
+  border-radius: 10px;
+
+  font-size: 16px;
+  outline: none;
+
+  transition: 0.2s ease;
+}
+
+/* Placeholder */
+.change-password-page input::placeholder {
+  color: #8d98a7;
+}
+
+/* Input Focus */
+.change-password-page input:focus {
+  border-color: #42c8d5;
+  box-shadow: 0 0 0 2px rgba(66, 200, 213, 0.15);
+}
+
+/* Change Password Button */
+.change-password-page button {
+  width: 100%;
+  margin-top: 5px;
+  padding: 18px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(90deg, #68e0b5, #2fb5ee);
+
+  color: #071017;
+
+  font-size: 20px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+/* Button Hover */
+.change-password-page button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(47, 181, 238, 0.25);
+}
+
+/* Button Click */
+.change-password-page button:active {
+  transform: translateY(0);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .change-password-page {
+    margin: 20px 15px 40px;
+    padding: 30px 20px;
+    border-radius: 22px;
+  }
+
+  .change-password-page h1 {
+    font-size: 32px;
+  }
+
+  .change-password-page input {
+    padding: 16px;
+  }
+
+  .change-password-page button {
+    padding: 16px;
+    font-size: 18px;
+  }
+}
+
+/* =========================
    TABLET
 ========================= */
 

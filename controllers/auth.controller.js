@@ -10,6 +10,7 @@ import {
 import { createAuthSession, setAuthCookies } from "../utils/auth.js";
 
 import {
+  deleteAllUserSessions,
   deleteSession,
   getSessionById,
   updateSessionLastUsed,
@@ -24,7 +25,8 @@ import {
 } from "../utils/token.js";
 
 import { sendVerificationEmail } from "../services/email.service.js";
-import { getUserById, updateUserPassword } from "../models/user.model.js";
+import { ObjectId } from "mongodb";
+//import { getUserById, updateUserPassword } from "../models/user.model.js";
 
 /*
 |--------------------------------------------------------------------------
@@ -413,25 +415,29 @@ export const changePasswordPage = (req, res) => {
 export const changePassword = async (req, res) => {
   try {
     // 1. Validate request body
-    const validation = changePasswordSchema.safeParse(req.body);
+    const result = changePasswordSchema.safeParse(req.body);
 
-    if (!validation.success) {
+    if (!result.success) {
       return res.status(400).json({
         success: false,
-        message: validation.error.issues[0].message,
+        message: result.error.issues[0].message,
       });
     }
 
-    // 2. Get validated data
-    const { currentPassword, newPassword, confirmPassword } = validation.data;
+    const { currentPassword, newPassword } = result.data;
 
-    // 3. Get logged-in user
-    const user = await getUserById(req.user.id);
+    // 2. Get logged-in user's ID
+    const userId = req.user.id;
+
+    // 3. Find user
+    const user = await userCollection.findOne({
+      _id: new ObjectId(userId),
+    });
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: "User not found.",
       });
     }
 
@@ -441,7 +447,7 @@ export const changePassword = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({
         success: false,
-        message: "Current password is incorrect",
+        message: "Current password is incorrect.",
       });
     }
 
@@ -449,19 +455,35 @@ export const changePassword = async (req, res) => {
     const hashedPassword = await argon2.hash(newPassword);
 
     // 6. Update password
-    await updateUserPassword(req.user.id, hashedPassword);
+    await userCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      {
+        $set: {
+          password: hashedPassword,
+          updatedAt: new Date(),
+        },
+      },
+    );
 
-    // 7. Success response
+    // 7. Revoke all existing sessions
+    await deleteAllUserSessions(userId);
+
+    // 8. Clear authentication cookies
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
+
+    // 9. Success response
     return res.status(200).json({
       success: true,
-      message: "Password changed successfully",
+      message: "Password changed successfully. Please login again.",
     });
   } catch (error) {
     console.error("Change Password Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      //message: "Something went wrong.",
+      message: error.message,
     });
   }
 };
