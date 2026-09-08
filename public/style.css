@@ -1762,6 +1762,349 @@ ul {
     padding: 12px;
   }
 }
+
+/* =========================
+   FORGOT PASSWORD PAGE
+========================= */
+
+.auth-page {
+  width: 100%;
+  min-height: calc(100vh - 110px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 40px 20px;
+
+  animation: fadeIn 0.5s ease;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+
+  padding: 42px 38px;
+
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+
+  animation: fadeIn 0.5s ease;
+}
+
+/* =========================
+   HEADING
+========================= */
+
+.auth-card h1 {
+  margin: 0 0 12px;
+
+  text-align: center;
+
+  font-family: "Sora", sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+/* =========================
+   DESCRIPTION
+========================= */
+
+.auth-card > p {
+  margin: 0 auto 30px;
+
+  max-width: 420px;
+
+  text-align: center;
+
+  color: var(--muted);
+
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.auth-card form {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+/* =========================
+   FORM GROUP
+========================= */
+
+.auth-card .form-group {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+
+  margin-bottom: 0;
+}
+
+/* =========================
+   LABEL
+========================= */
+
+.auth-card .form-group label {
+  display: block;
+
+  margin-bottom: 0;
+
+  color: var(--muted);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.auth-card .form-group input {
+  width: 100%;
+
+  padding: 14px 16px;
+
+  box-sizing: border-box;
+
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition: var(--transition);
+}
+
+.auth-card .form-group input::placeholder {
+  color: #6b7280;
+}
+
+.auth-card .form-group input:hover {
+  border-color: var(--border-strong);
+}
+
+.auth-card .form-group input:focus {
+  border-color: var(--accent-2);
+
+  background: rgba(255, 255, 255, 0.07);
+
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15);
+}
+
+/* =========================
+   SEND RESET LINK BUTTON
+========================= */
+
+.auth-card button {
+  width: 100%;
+
+  padding: 15px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+
+  color: #04121a;
+
+  font-family: "Sora", sans-serif;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: var(--transition);
+}
+
+.auth-card button:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 14px 30px rgba(56, 189, 248, 0.32);
+}
+
+.auth-card button:active {
+  transform: scale(0.985);
+}
+
+/* =========================
+   ALERT
+========================= */
+
+.auth-card .alert {
+  width: 100%;
+
+  padding: 12px 16px;
+
+  margin-bottom: 20px;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+  line-height: 1.5;
+
+  animation: slideDown 0.3s ease;
+}
+
+/* =========================
+   ERROR MESSAGE
+========================= */
+
+.auth-card .alert.error {
+  color: #fecaca;
+
+  background: var(--danger-soft);
+
+  border: 1px solid rgba(239, 68, 68, 0.35);
+
+  border-left: 4px solid var(--danger);
+}
+
+/* =========================
+   SUCCESS MESSAGE
+========================= */
+
+.auth-card .alert.success {
+  color: #a7f3d0;
+
+  background: var(--success-soft);
+
+  border: 1px solid rgba(34, 197, 94, 0.35);
+
+  border-left: 4px solid var(--success);
+}
+
+/* =========================
+   BACK TO LOGIN
+========================= */
+
+.auth-card > a {
+  display: block;
+
+  margin-top: 24px;
+
+  text-align: center;
+
+  color: var(--accent-2);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition: var(--transition);
+}
+
+.auth-card > a:hover {
+  color: var(--accent);
+
+  text-decoration: underline;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+  .auth-page {
+    min-height: calc(100vh - 90px);
+
+    padding: 30px 15px;
+  }
+
+  .auth-card {
+    padding: 32px 22px;
+
+    border-radius: 20px;
+  }
+
+  .auth-card h1 {
+    font-size: 27px;
+  }
+
+  .auth-card > p {
+    font-size: 14px;
+  }
+
+  .auth-card .form-group input {
+    padding: 13px 14px;
+  }
+
+  .auth-card button {
+    padding: 14px;
+  }
+}
+
+/* =========================
+   VERY SMALL DEVICES
+========================= */
+
+@media (max-width: 420px) {
+  .auth-page {
+    padding: 25px 10px;
+  }
+
+  .auth-card {
+    padding: 28px 18px;
+
+    border-radius: 18px;
+  }
+
+  .auth-card h1 {
+    font-size: 25px;
+  }
+}
+
+/* =========================
+   FORGOT PASSWORD LINK
+========================= */
+
+.forgot-password-link {
+  width: 100%;
+  text-align: right;
+  margin-top: -8px;
+  margin-bottom: 5px;
+}
+
+.forgot-password-link a {
+  color: var(--accent-2);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.forgot-password-link a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
 /* ==========================
        NOT LOGGED IN
     ========================== */

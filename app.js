@@ -11,6 +11,7 @@ import { shortenerRoutes } from "./routes/shortener.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import verificationRoutes from "./routes/verification.routes.js";
 import emailRoutes from "./routes/email.routes.js";
+import passwordResetRoutes from "./routes/password-reset.routes.js";
 
 const app = express();
 
@@ -132,6 +133,8 @@ app.use("/", profileRoutes);
 app.use("/", emailRoutes);
 
 app.use("/", verificationRoutes);
+
+app.use("/", passwordResetRoutes);
 
 app.use(authRoutes);
 

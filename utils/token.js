@@ -92,6 +92,12 @@ export const generateEmailVerificationCode = () => {
 export const generateEmailVerificationToken = () => {
   return crypto.randomBytes(32).toString("hex");
 };
+
+
+//reset-token function
+export function generatePasswordResetToken() {
+  return crypto.randomBytes(32).toString("hex");
+}
 /*
 |--------------------------------------------------------------------------
 | Hash Refresh Token

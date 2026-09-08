@@ -3,10 +3,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const env = {
-  MONGODB_URL: process.env.MONGODB_URL,
 
+  APP_URL:process.env.APP_URL,
+
+  MONGODB_URL: process.env.MONGODB_URL,
   MONGODB_DATABASE_NAME: process.env.MONGODB_DATABASE_NAME,
 
+  JWT_SECRET: process.env.JWT_SECRET,
   JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
   JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
 

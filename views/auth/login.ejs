@@ -1,72 +1,104 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login</title>
 </head>
+
 <body>
 
-  <%- include('../partials/header', { title: "Login" }) %>
+    <%- include('../partials/header', { title: "Login" }) %>
 
-<div class="auth-container">
+    <div class="auth-container">
 
-    <div class="login-image">
-        <img src="https://cdn-icons-png.flaticon.com/512/9069/9069049.png" alt="Login">
+        <div class="login-image">
+            <img
+                src="https://cdn-icons-png.flaticon.com/512/9069/9069049.png"
+                alt="Login"
+            >
+        </div>
+
+        <h1>Login Page</h1>
+
+        <form action="/login" method="POST" class="auth-form">
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                />
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                />
+
+            </div>
+
+            <!-- Forgot Password -->
+            <div class="forgot-password-link">
+
+                <a href="/forgot-password">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <% if (errors && errors.length > 0) { %>
+
+                <% errors.forEach((error) => { %>
+
+                    <p class="flash-error">
+                        <%= error %>
+                    </p>
+
+                <% }); %>
+
+            <% } %>
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <p class="auth-link">
+
+            Don't have an account?
+
+            <a href="/register">
+                Register
+            </a>
+
+        </p>
+
     </div>
 
-    <h1>Login Page</h1>
+    <%- include('../partials/footer') %>
 
-    <form action="/login" method="POST" class="auth-form">
-
-        <div class="form-group">
-            <label for="email">Email</label>
-
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                required
-            />
-        </div>
-
-        <div class="form-group">
-            <label for="password">Password</label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                required
-            />
-        </div>
-
-
-         <% if (errors && errors.length > 0) { %>
-
-          <% errors.forEach((error) => { %>
-
-           <p class="flash-error">
-              <%= error %>
-           </p>
-
-          <% }); %>
-
-        <% } %>
-
-        <button type="submit">Login</button>
-
-    </form>
-
-    <p class="auth-link">
-        Don't have an account?
-        <a href="/register">Register</a>
-    </p>
-
-</div>
-
-<%- include('../partials/footer') %>
 </body>
+
 </html>
