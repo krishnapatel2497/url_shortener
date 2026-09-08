@@ -472,11 +472,9 @@ export const changePassword = async (req, res) => {
     res.clearCookie("access_token");
     res.clearCookie("refresh_token");
 
-    // 9. Success response
-    return res.status(200).json({
-      success: true,
-      message: "Password changed successfully. Please login again.",
-    });
+    // 9. Redirect to login page
+    return res.redirect("/login");
+    
   } catch (error) {
     console.error("Change Password Error:", error);
 
