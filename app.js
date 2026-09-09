@@ -31,7 +31,7 @@ app.use(express.static("public"));
 |--------------------------------------------------------------------------
 */
 
-app.use(express.urlencoded({ extended: true }));    //POST request
+app.use(express.urlencoded({ extended: true })); //POST request
 
 app.use(express.json());
 
@@ -136,6 +136,7 @@ app.use("/", verificationRoutes);
 
 app.use("/", passwordResetRoutes);
 
+// Authentication routes
 app.use(authRoutes);
 
 app.use(shortenerRoutes);

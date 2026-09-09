@@ -3,8 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const env = {
-
-  APP_URL:process.env.APP_URL,
+  APP_URL: process.env.APP_URL,
 
   MONGODB_URL: process.env.MONGODB_URL,
   MONGODB_DATABASE_NAME: process.env.MONGODB_DATABASE_NAME,
@@ -19,35 +18,10 @@ export const env = {
   ETHEREAL_HOST: process.env.ETHEREAL_HOST,
   ETHEREAL_PORT: process.env.ETHEREAL_PORT,
   ETHEREAL_USER: process.env.ETHEREAL_USER,
-  ETHEREAL_PASS: process.env.ETHEREAL_PASS, 
+  ETHEREAL_PASS: process.env.ETHEREAL_PASS,
+
+  // // Google OAuth
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID, //Identifies your application to Google
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET, //Proves that your backend is allowed to use the Google OAuth service
+  GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL, //Where Google sends the user back after successful authentication
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const env1 = z
-//   .object({
-//     PORT: z.coerce.number().default(3000),
-//     MONGODB_URL: z.string(),
-//     MONGODB_DATABASE_NAME: z.string(),
-//     JWT_ACCESS_SECRET: z.string(),
-//     JWT_REFRESH_SECRET: z.string(),
-//   })
-//   .parse(process.env);

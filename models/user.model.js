@@ -16,16 +16,49 @@ export const getUserByEmail = async (email) => {
   });
 };
 
+// Get user by Google ID
+// Does a user with this Google ID already exist?
+export const getUserByGoogleId = async (googleId) => {
+  return await userCollection.findOne({
+    googleId,
+  });
+};
+
+// Create user from Google OAuth
+
+export const createGoogleUser = async ({ name, email, googleId }) => {
+  const user = {
+    name,
+    email: email.toLowerCase(),
+
+    // Google users don't have a local password initially
+    password: null,
+
+    // This account was created through Google
+    authProvider: "google",
+
+    // Google's unique user ID
+    googleId,
+
+    // Google has already authenticated the email
+    emailVerified: true,
+
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const result = await userCollection.insertOne(user);
+
+  return {
+    ...user,
+    _id: result.insertedId,
+  };
+};
+
 // Update user password
 export const updateUserPassword = async (userId, hashedPassword) => {
   return await userCollection.updateOne(
-    {
-      _id: new ObjectId(userId),
-    },
-    {
-      $set: {
-        password: hashedPassword,
-      },
-    },
+    { _id: new ObjectId(userId) },
+    { $set: { password: hashedPassword } },
   );
 };

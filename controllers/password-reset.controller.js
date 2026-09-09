@@ -24,11 +24,7 @@ import {
   resetPasswordSchema,
 } from "../validators/password-reset.validator.js";
 
-/*
-|--------------------------------------------------------------------------
-| Show Forgot Password Page
-|--------------------------------------------------------------------------
-*/
+//Show Forgot Password Page
 
 export async function showForgotPassword(req, res) {
   return res.render("auth/forgot-password", {
@@ -37,11 +33,7 @@ export async function showForgotPassword(req, res) {
   });
 }
 
-/*
-|--------------------------------------------------------------------------
-| Forgot Password
-|--------------------------------------------------------------------------
-*/
+//Forgot Password
 
 export async function forgotPassword(req, res) {
   try {
@@ -58,9 +50,8 @@ export async function forgotPassword(req, res) {
 
     const user = await getUserByEmail(email);
 
-    /*
-     * Don't reveal whether an email exists.
-     */
+    //Don't reveal whether an email exists.
+
     if (!user) {
       return res.render("auth/forgot-password", {
         error: null,
@@ -69,43 +60,30 @@ export async function forgotPassword(req, res) {
       });
     }
 
-    /*
-     * Delete previous reset tokens
-     */
+    //Delete previous reset tokens
     await deleteUserPasswordResets(user._id);
 
-    /*
-     * Generate plain reset token
-     */
+    // Generate plain reset token
     const token = generatePasswordResetToken();
 
-    /*
-     * Store only hashed token in database
-     */
+    //Store only hashed token in database
     const tokenHash = hashToken(token);
 
-    /*
-     * Token expires after 15 minutes
-     */
+    //Token expires after 15 minutes
+
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
-    /*
-     * Save reset information
-     */
+    //Save reset information
     await createPasswordReset({
       userId: user._id,
       tokenHash,
       expiresAt,
     });
 
-    /*
-     * Create password reset URL
-     */
+    //Create password reset URL
     const resetUrl = `${env.APP_URL}/reset-password?token=${token}`;
 
-    /*
-     * Send reset email
-     */
+    //Send reset email
     await sendPasswordResetEmail({
       email: user.email,
       resetUrl,
@@ -126,11 +104,7 @@ export async function forgotPassword(req, res) {
   }
 }
 
-/*
-|--------------------------------------------------------------------------
-| Show Reset Password Page
-|--------------------------------------------------------------------------
-*/
+//Show Reset Password Page
 
 export async function showResetPassword(req, res) {
   try {
@@ -143,14 +117,10 @@ export async function showResetPassword(req, res) {
       });
     }
 
-    /*
-     * Hash token received from URL
-     */
+    //Hash token received from URL
     const tokenHash = hashToken(token);
 
-    /*
-     * Find valid token
-     */
+    // Find valid token
     const resetRequest = await getPasswordResetByTokenHash(tokenHash);
 
     if (!resetRequest) {
@@ -160,9 +130,7 @@ export async function showResetPassword(req, res) {
       });
     }
 
-    /*
-     * Token is valid
-     */
+    //Token is valid
     return res.render("auth/reset-password", {
       error: null,
       token,
@@ -177,11 +145,7 @@ export async function showResetPassword(req, res) {
   }
 }
 
-/*
-|--------------------------------------------------------------------------
-| Reset Password
-|--------------------------------------------------------------------------
-*/
+//Reset Password
 
 export async function resetPassword(req, res) {
   try {
@@ -196,14 +160,10 @@ export async function resetPassword(req, res) {
 
     const { token, password } = result.data;
 
-    /*
-     * Hash token from form
-     */
+    // Hash token from form
     const tokenHash = hashToken(token);
 
-    /*
-     * Find valid reset token
-     */
+    //Find valid reset token
     const resetRequest = await getPasswordResetByTokenHash(tokenHash);
 
     if (!resetRequest) {
@@ -213,9 +173,7 @@ export async function resetPassword(req, res) {
       });
     }
 
-    /*
-     * Get user
-     */
+    // Ge
     const user = await getUserById(resetRequest.userId);
 
     if (!user) {
@@ -225,19 +183,13 @@ export async function resetPassword(req, res) {
       });
     }
 
-    /*
-     * Hash new password
-     */
+    //Hash new password
     const hashedPassword = await argon2.hash(password);
 
-    /*
-     * Update password
-     */
+    //Update password
     await updateUserPassword(user._id, hashedPassword);
 
-    /*
-     * Delete used reset token
-     */
+    //Delete used reset token
     await deletePasswordReset(tokenHash);
 
     /*
