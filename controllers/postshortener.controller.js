@@ -58,7 +58,7 @@ export const postURLShortener = async (req, res) => {
     const { url, shortCode } = data;
 
     // Generate random short code if user doesn't provide one
-    const finalShortCode = shortCode; //|| crypto.randomBytes(4).toString("hex"); //shortCode is now required this is no longer necessary : crypto.randomBytes(4).toString("hex");
+    const finalShortCode = shortCode.toLowerCase(); //|| crypto.randomBytes(4).toString("hex"); //shortCode is now required this is no longer necessary : crypto.randomBytes(4).toString("hex");
 
     // Check whether short code already exists
     const existingLink = await getLinkByShortCode(finalShortCode);
@@ -91,14 +91,14 @@ export const redirectToShortLink = async (req, res) => {
   try {
     const { shortCode } = req.params;
 
-    const link = await getLinkByShortCode(shortCode);
+    const link = await getLinkByShortCode(shortCode.toLowerCase());
 
     if (!link) {
       return res.status(404).send("404 - Short URL not found");
     }
 
     // Increase clicks by 1
-    await incrementClicks(shortCode);
+    await incrementClicks(shortCode.toLowerCase());
 
     return res.redirect(link.url);
   } catch (error) {

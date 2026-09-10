@@ -152,6 +152,7 @@
               link.url.length >= 45
                 ? `${link.url.slice(0, 45)}...`
                 : link.url;
+            const shortUrl = `${host}/${link.shortCode}`;
           %>
 
 
@@ -244,6 +245,7 @@
     button.addEventListener("click", async () => {
 
       const url = button.dataset.url;
+
       const icon = button.querySelector("i");
 
       try {

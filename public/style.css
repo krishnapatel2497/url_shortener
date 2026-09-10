@@ -2046,7 +2046,7 @@ RESPONSIVE
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 20px;
+  padding: 50px 20px;
 }
 
 .verify-card {
@@ -2054,10 +2054,110 @@ RESPONSIVE
   max-width: 500px;
   padding: 40px;
   text-align: center;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: var(--card-bg, rgba(255, 255, 255, 0.06));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
+
+.verify-card h1 {
+  margin: 0 0 12px;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.verify-card p {
+  margin: 0 0 25px;
+  color: var(--text-muted, #9ca3af);
+  line-height: 1.6;
+}
+
+.verify-card .form-group {
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+.verify-card label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.verify-card input[type="text"] {
+  width: 100%;
+  padding: 14px 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-color, #ffffff);
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 4px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.verify-card input[type="text"]::placeholder {
+  color: #777;
+  letter-spacing: 1px;
+}
+
+.verify-card input[type="text"]:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.verify-button {
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #6366f1;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.verify-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.verify-button:active {
+  transform: translateY(0);
+}
+
+.verify-card strong {
+  color: #ffffff;
+}
+
+.verify-card > a {
+  display: inline-block;
+  margin-top: 5px;
+  color: #818cf8;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.verify-card > a:hover {
+  color: #a5b4fc;
+  text-decoration: underline;
+}
+
+/* =========================
+   VERIFICATION STATUS ICONS
+========================= */
 
 .verify-icon {
   width: 70px;
@@ -2072,37 +2172,36 @@ RESPONSIVE
 }
 
 .success-icon {
-  background: #d1fae5;
-  color: #059669;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
 }
 
 .error-icon {
-  background: #fee2e2;
-  color: #dc2626;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
-.verify-card h1 {
-  margin-bottom: 15px;
-}
+/* =========================
+   RESPONSIVE
+========================= */
 
-.verify-card p {
-  margin-bottom: 25px;
-  color: #666;
-  line-height: 1.6;
-}
+@media (max-width: 600px) {
+  .verify-page {
+    padding: 30px 15px;
+  }
 
-.verify-button {
-  display: inline-block;
-  padding: 12px 24px;
-  border-radius: 8px;
-  background: #2563eb;
-  color: white;
-  text-decoration: none;
-  font-weight: 600;
-}
+  .verify-card {
+    padding: 30px 22px;
+    border-radius: 16px;
+  }
 
-.verify-button:hover {
-  opacity: 0.9;
+  .verify-card h1 {
+    font-size: 26px;
+  }
+
+  .verify-card p {
+    font-size: 14px;
+  }
 }
 
 /* =========================================
@@ -2180,6 +2279,15 @@ RESPONSIVE
   font-weight: 800;
 
   color: #55d6d0;
+}
+
+.auth-container > p {
+  margin: 8px auto 25px;
+  max-width: 450px;
+  color: #9ca3af;
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: center;
 }
 
 /* =========================================
@@ -2261,6 +2369,27 @@ RESPONSIVE
   border-color: #42c8d5;
 
   box-shadow: 0 0 0 3px rgba(66, 200, 213, 0.12);
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.form-actions button,
+.cancel-button {
+  flex: 1;
+}
+
+.cancel-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
 /* =========================================
@@ -3733,5 +3862,203 @@ RESPONSIVE
 
   .short-url-item {
     padding: 14px;
+  }
+}
+
+/* =========================================
+   ADDITIONAL RESPONSIVE-UI ENHANCEMENTS
+   (appended only — nothing above was changed)
+========================================= */
+
+/* Global safety net: stop any element from forcing
+   horizontal scroll on narrow screens */
+html,
+body {
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Large tablets / small laptops:
+   keep the main cards from touching the viewport edges */
+@media (max-width: 1024px) {
+  .container,
+  .report-section,
+  .edit-container,
+  .auth-card,
+  .change-password-page,
+  .auth-container,
+  .shortener-card {
+    max-width: 92%;
+  }
+}
+
+/* Header wraps instead of overflowing on medium screens */
+@media (max-width: 768px) {
+  .main-header {
+    height: auto;
+    min-height: 68px;
+    padding: 10px 12px;
+  }
+
+  .navbar {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 8px;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Stack profile / edit-profile headers on narrower phones
+   instead of only left-aligning them */
+@media (max-width: 640px) {
+  .edit-profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 10px;
+  }
+
+  .profile-card-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+}
+
+/* Small phones: shrink icons, badges and truncated text
+   further so nothing clips or overflows */
+@media (max-width: 480px) {
+  .url-hero h1 {
+    font-size: 26px;
+  }
+
+  .hero-badge,
+  .about-badge,
+  .contact-badge,
+  .link-count,
+  .login-status {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+
+  .heading-icon,
+  .short-link-icon,
+  .contact-icon,
+  .empty-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .original-url {
+    max-width: 55vw;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .edit-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+
+  .profile-page .avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+
+  .verify-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 26px;
+  }
+
+  .login-image,
+  .register-image {
+    width: 64px;
+    height: 64px;
+  }
+
+  .login-image img,
+  .register-image img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Very small phones (folded devices, old iPhones) */
+@media (max-width: 360px) {
+  .url-hero h1 {
+    font-size: 23px;
+  }
+
+  .change-password-page h1 {
+    font-size: 24px;
+  }
+
+  .auth-container h1,
+  .auth-card h1 {
+    font-size: 21px;
+  }
+
+  .change-password-page,
+  .auth-container {
+    padding: 20px 14px;
+  }
+
+  .auth-card {
+    padding: 22px 14px;
+  }
+
+  .profile-title {
+    font-size: 22px;
+  }
+
+  .short-url-item {
+    padding: 12px;
+  }
+
+  .original-url {
+    max-width: 48vw;
+  }
+}
+
+/* Landscape phones: reduce vertical padding so content
+   isn't pushed below the fold */
+@media (max-height: 480px) and (orientation: landscape) {
+  .auth-page,
+  .verify-page {
+    padding: 15px 20px;
+    min-height: auto;
+  }
+
+  .auth-card,
+  .verify-card,
+  .change-password-page,
+  .auth-container {
+    padding: 24px;
+  }
+}
+
+/* Larger screens: prevent overly long line lengths
+   on very wide monitors for readability */
+@media (min-width: 1600px) {
+  .page-container,
+  .profile-page {
+    max-width: 1300px;
   }
 }
