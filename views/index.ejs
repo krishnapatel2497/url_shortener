@@ -1,157 +1,278 @@
-<%- include('./partials/header', { title: "URL Shortner" }) %>
 
-<% if (user) { %>                        
-    <h2>You are logged In</h2>
-<% } else { %>
-    <h2>You are not logged In</h2>
-<% } %>
+<%- include('./partials/header', { title: "URL Shortener" }) %>
 
-<div class="container">
+<main class="url-page">
 
-    <h1>URL Shortner</h1>
+  <!-- Hero Section -->
+  <section class="url-hero">
 
-    <p class="subtitle">
-        Convert long URLs into short and shareable links.
+    <div class="hero-badge">
+      ✦ SIMPLE & FAST URL SHORTENER
+    </div>
+
+    <h1>Shorten Your URLs</h1>
+
+    <p>
+      Convert long URLs into short, clean, and shareable links.
     </p>
 
+    <% if (user) { %>
+      <div class="login-status">
+        <span class="status-dot"></span>
+        You are logged in
+      </div>
+    <% } else { %>
+      <div class="login-status">
+        <span class="status-dot"></span>
+        You are not logged in
+      </div>
+    <% } %>
 
-      <!-- Zod validation error -->
+  </section>
+
+
+  <!-- URL Shortener Card -->
+  <section class="shortener-card">
+
+    <div class="card-heading">
+      <div>
+        <h2>Create Short URL</h2>
+        <p>Enter your long URL and create a custom short link.</p>
+      </div>
+
+      <div class="heading-icon">
+        <i class="fa-solid fa-link"></i>
+      </div>
+    </div>
+
+
+    <!-- Zod validation error -->
     <% if (errors && errors.length > 0) { %>
-    <div class="error-message">
-        <%= errors[0] %>
-    </div>
+      <div class="message error-message">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span><%= errors[0] %></span>
+      </div>
     <% } %>
 
-       <!-- Success message -->
+
+    <!-- Success message -->
     <% if (success && success.length > 0) { %>
-    <div class="success-message">
-        <%= success[0] %>
-    </div>
+      <div class="message success-message">
+        <i class="fa-solid fa-circle-check"></i>
+        <span><%= success[0] %></span>
+      </div>
     <% } %>
 
-    <form action="/" method="post">
 
-        <div class="form-group">
-            <label for="url">Original URL</label>
+    <form action="/" method="post" class="shortener-form">
 
-            <input
-                type="text"
-                id="url"
-                name="url"
-                placeholder="https://example.com"
-                required
-            />
+      <div class="form-group">
+        <label for="url">Original URL</label>
+
+        <div class="input-wrapper">
+          <i class="fa-solid fa-globe"></i>
+
+          <input
+            type="url"
+            id="url"
+            name="url"
+            placeholder="https://example.com/very-long-url"
+            required
+          />
         </div>
+      </div>
 
-        <div class="form-group">
-            <label for="shortCode">Custom Short Code</label>
 
-            <input
-                type="text"
-                id="shortCode"
-                name="shortCode"
-                placeholder="my-link"
-                required
-            />
+      <div class="form-group">
+        <label for="shortCode">Custom Short Code</label>
+
+        <div class="input-wrapper">
+          <i class="fa-solid fa-hashtag"></i>
+
+          <input
+            type="text"
+            id="shortCode"
+            name="shortCode"
+            placeholder="my-link"
+            required
+          />
         </div>
+      </div>
 
-        <button type="submit">
-            Shorten URL
-        </button>
+
+      <button type="submit" class="shorten-btn">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Shorten URL
+      </button>
 
     </form>
 
-    <h2>Your Shortened URLs</h2>
+  </section>
 
-    <ul>
+
+  <!-- Your Links -->
+  <section class="links-section">
+
+    <div class="section-heading">
+      <div>
+        <h2>Your Shortened URLs</h2>
+        <p>Manage and share your shortened links.</p>
+      </div>
+
+      <span class="link-count">
+        <%= links.length %> Links
+      </span>
+    </div>
+
+
+    <% if (links.length === 0) { %>
+
+      <div class="empty-links">
+        <div class="empty-icon">
+          <i class="fa-solid fa-link-slash"></i>
+        </div>
+
+        <h3>No shortened URLs yet</h3>
+
+        <p>
+          Create your first short URL using the form above.
+        </p>
+      </div>
+
+    <% } else { %>
+
+      <div class="links-list">
+
         <% links.forEach((link) => { %>
 
-            <%
-                const truncatedURL =
-                    link.url.length >= 30
-                        ? `${link.url.slice(0, 30)}...`
-                        : link.url;
-            %>
+          <% 
+            const truncatedURL =
+              link.url.length >= 45
+                ? `${link.url.slice(0, 45)}...`
+                : link.url;
+          %>
 
-           <li class="short-url-item">
-    <div class="short-url-info">
-        <a
-            href="/<%= link.shortCode %>"
-            target="_blank"
-            class="short-link"
-        >
-            <%= link.shortCode %>
-        </a>
 
-        <span>- <%= truncatedURL %></span>
-    </div>
+          <article class="short-url-item">
 
-    <div class="short-url-actions">
+            <div class="short-url-info">
 
-        <!-- Copy Button -->
-        <button
-            type="button"
-            class="action-btn copy-btn"
-            data-url="<%= host %>/<%= link.shortCode %>"
-            title="Copy short URL"
-        >
-             <i class="fa-solid fa-link"></i>
-        </button>
+              <div class="short-link-icon">
+                <i class="fa-solid fa-link"></i>
+              </div>
 
-        <!-- Edit Button -->
-        <a
-            href="/shortener/edit/<%= link._id %>"
-            class="action-btn edit-btn"
-            title="Edit short URL"
-        >
-         <i class="fa-solid fa-pen-to-square"></i>
-        </a>
+              <div class="url-details">
 
-        <!-- Delete Button -->
-        <form
-            action="/shortener/delete/<%= link._id %>"
-            method="POST"
-            class="delete-form"
-            onsubmit="return confirm('Are you sure you want to delete this short URL?');"
-        >
-            <button
-                type="submit"
-                class="action-btn delete-btn"
-                title="Delete short URL"
-            >
-                <i class="fa-solid fa-trash"></i>
-            </button>
-        </form>
+                <a
+                  href="/<%= link.shortCode %>"
+                  target="_blank"
+                  class="short-link"
+                >
+                  <%= host %>/<%= link.shortCode %>
+                </a>
 
-    </div>
-</li>
- <% }) %>
-    </ul>
+                <span class="original-url">
+                  <%= truncatedURL %>
+                </span>
 
-</div>
+              </div>
+
+            </div>
+
+
+            <div class="short-url-actions">
+
+              <!-- Copy -->
+              <button
+                type="button"
+                class="action-btn copy-btn"
+                data-url="<%= host %>/<%= link.shortCode %>"
+                title="Copy short URL"
+              >
+                <i class="fa-solid fa-copy"></i>
+              </button>
+
+
+              <!-- Edit -->
+              <a
+                href="/shortener/edit/<%= link._id %>"
+                class="action-btn edit-btn"
+                title="Edit short URL"
+              >
+                <i class="fa-solid fa-pen-to-square"></i>
+              </a>
+
+
+              <!-- Delete -->
+              <form
+                action="/shortener/delete/<%= link._id %>"
+                method="POST"
+                class="delete-form"
+                onsubmit="return confirm('Are you sure you want to delete this short URL?');"
+              >
+
+                <button
+                  type="submit"
+                  class="action-btn delete-btn"
+                  title="Delete short URL"
+                >
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+
+              </form>
+
+            </div>
+
+          </article>
+
+        <% }) %>
+
+      </div>
+
+    <% } %>
+
+  </section>
+
+</main>
+
 
 <script>
-    document.querySelectorAll(".copy-btn").forEach((button) => {
-  button.addEventListener("click", async () => {
-    const url = button.dataset.url;
-    const icon = button.querySelector("i");
+  document.querySelectorAll(".copy-btn").forEach((button) => {
 
-    try {
-      await navigator.clipboard.writeText(url);
+    button.addEventListener("click", async () => {
 
-      // Change only the icon
-      icon.classList.remove("fa-link");
-      icon.classList.add("fa-check");
+      const url = button.dataset.url;
+      const icon = button.querySelector("i");
 
-      setTimeout(() => {
-        icon.classList.remove("fa-check");
-        icon.classList.add("fa-link");
-      }, 1500);
-    } catch (error) {
-      console.error("Failed to copy URL:", error);
-    }
+      try {
+
+        await navigator.clipboard.writeText(url);
+
+        icon.classList.remove("fa-copy");
+        icon.classList.add("fa-check");
+
+        button.classList.add("copied");
+
+        setTimeout(() => {
+
+          icon.classList.remove("fa-check");
+          icon.classList.add("fa-copy");
+
+          button.classList.remove("copied");
+
+        }, 1500);
+
+      } catch (error) {
+
+        console.error("Failed to copy URL:", error);
+
+      }
+
+    });
+
   });
-});
 </script>
 
+
 <%- include('./partials/footer') %>
+
