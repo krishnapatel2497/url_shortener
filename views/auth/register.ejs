@@ -1,82 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
-  </head>
-  <body>
-   <%- include('../partials/header', { title: "Register" }) %>
+</head>
 
-<div class="auth-container">
+<body>
 
-     <div class="register-image">
-        <img src="https://lh6.googleusercontent.com/proxy/9bRoEaqvLuz8JD7YkturWaZbtk-pSh-grFjOQ1ZQ6Q1H7UIazgQuje4x1Pe9RqpmqVtTDt3M50Rx1Bqm8X0hLBryjRRGEAVEwZMBskK-GZIFd5yT2fafbiT0g6a0" alt="Register">
-    </div>
+    <%- include('../partials/header', { title: "Register" }) %>
 
-   
+    <main class="auth-container">
 
-    <form action="/register" method="POST" class="register-form" id="register-form">
-
-        <div class="form-group">
-            <label for="name">Name</label>
-
-            <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Enter your name"
-                required
-            />
+        <!-- Register Image -->
+        <div class="register-image">
+            <img
+                src="https://lh6.googleusercontent.com/proxy/9bRoEaqvLuz8JD7YkturWaZbtk-pSh-grFjOQ1ZQ6Q1H7UIazgQuje4x1Pe9RqpmqVtTDt3M50Rx1Bqm8X0hLBryjRRGEAVEwZMBskK-GZIFd5yT2fafbiT0g6a0"
+                alt="Register"
+            >
         </div>
 
-        <div class="form-group">
-            <label for="email">Email</label>
+        <!-- Heading -->
+        <h1>Create Account</h1>
 
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                required
-            />
-        </div>
+        <!-- Register Form -->
+        <form
+            action="/register"
+            method="POST"
+            class="register-form"
+            id="register-form"
+        >
 
-        <div class="form-group">
-            <label for="password">Password</label>
+            <div class="form-group">
 
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                required
-            />
-        </div>
+                <label for="name">
+                    Name
+                </label>
 
-        <% if (errors && errors.length > 0) { %>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Enter your name"
+                    autocomplete="name"
+                    required
+                />
 
-          <% errors.forEach((error) => { %>
+            </div>
 
-           <p class="flash-error">
-              <%= error %>
-           </p>
 
-          <% }); %>
+            <div class="form-group">
 
-        <% } %>
+                <label for="email">
+                    Email
+                </label>
 
-        <button type="submit">Register</button>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required
+                />
 
-    </form>
+            </div>
 
-    <p class="auth-link">
-        Already have an account?
-        <a href="/login">Login</a>
-    </p>
 
-</div>
+            <div class="form-group">
 
-<%- include('../partials/footer') %>
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="new-password"
+                    required
+                />
+
+            </div>
+
+
+            <!-- Errors -->
+            <% if (errors && errors.length > 0) { %>
+
+                <% errors.forEach((error) => { %>
+
+                    <p class="flash-error">
+                        <%= error %>
+                    </p>
+
+                <% }); %>
+
+            <% } %>
+
+
+            <!-- Register Button -->
+            <button
+                type="submit"
+                class="register-btn"
+            >
+                Register
+            </button>
+
+        </form>
+
+
+        <!-- Login Link -->
+        <p class="auth-link">
+
+            Already have an account?
+
+            <a href="/login">
+                Login
+            </a>
+
+        </p>
+
+    </main>
+
+    <%- include('../partials/footer') %>
+
 </body>
+
 </html>
