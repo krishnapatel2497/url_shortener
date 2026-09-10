@@ -1,154 +1,115 @@
 <%- include("../partials/header") %>
 
-
 <main class="profile-page">
 
-    <h1 class="profile-title">
-        Your Profile
-    </h1>
-
+    <h1 class="profile-title">Your Profile</h1>
 
     <% if (user) { %>
 
+        <!-- Login Status -->
         <div class="login-status">
             <span class="status-dot"></span>
-
             You are logged in
         </div>
 
-
+        <!-- Profile Card -->
         <section class="profile-card">
 
             <!-- Profile Header -->
-
             <div class="profile-card-header">
 
                 <div class="avatar">
-
                     <%= profileUser.name
-                        .charAt(0)
-                        .toUpperCase() %>
-
+                        ? profileUser.name.charAt(0).toUpperCase()
+                        : "U" %>
                 </div>
 
-
                 <div class="profile-info">
+                    <h2><%= profileUser.name %></h2>
 
-                    <h2>
-                        <%= profileUser.name %>
-                    </h2>
-
-                    <p>
-                        <%= profileUser.email %>
-                    </p>
+                    <p><%= profileUser.email %></p>
 
                     <p class="member-date">
-
-                        <span>
-                            Member since
-                        </span>
+                        <span>Member since</span>
 
                         <%= profileUser.createdAt
-                            ? new Date(
-                                profileUser.createdAt
-                            ).toLocaleDateString()
+                            ? new Date(profileUser.createdAt).toLocaleDateString()
                             : "Recently" %>
                     </p>
-
                 </div>
 
             </div>
 
 
             <!-- Statistics -->
-
             <div class="profile-stats">
 
                 <div class="stat">
-
-                    <strong>
-                        <%= linksCreated %>
-                    </strong>
-
-                    <span>
-                        LINKS CREATED
-                    </span>
-
+                    <strong><%= linksCreated %></strong>
+                    <span>LINKS CREATED</span>
                 </div>
 
-
                 <div class="stat">
-
-                    <strong>
-                        <%= totalClicks %>
-                    </strong>
-
-                    <span>
-                        TOTAL CLICKS
-                    </span>
-
+                    <strong><%= totalClicks %></strong>
+                    <span>TOTAL CLICKS</span>
                 </div>
 
-
                 <div class="stat">
-
-                    <strong>
-                        Today
-                    </strong>
-
-                    <span>
-                        LAST ACTIVE
-                    </span>
-
+                    <strong>Today</strong>
+                    <span>LAST ACTIVE</span>
                 </div>
 
             </div>
 
 
+            <!-- Email Verification -->
+            <div class="verification">
 
-       <!-- Email Verification -->
+                <div class="verification-status">
 
-<div class="verification">
+                    <span class="verification-label">
+                        Email Verification:
+                    </span>
 
-    <span>
-        Email Verification:
-    </span>
+                    <% if (profileUser.emailVerified) { %>
 
-    <% if (profileUser.emailVerified) { %>
+                        <span class="verified">
+                            <span class="verification-dot"></span>
+                            Verified
+                        </span>
 
-        <span class="verified">
-            ● Verified
-        </span>
+                    <% } else { %>
 
-    <% } else { %>
+                        <span class="not-verified">
+                            <span class="verification-dot"></span>
+                            Not Verified
+                        </span>
 
-        <span class="not-verified">
-            ● Not Verified
-        </span>
+                        <a
+                            href="/verify-email?email=<%= encodeURIComponent(profileUser.email) %>"
+                            class="verify-button"
+                        >
+                            Verify Now
+                        </a>
 
-         <a
-            href="/verify-email?email=<%= encodeURIComponent(profileUser.email) %>"
-            class="verify-button"
-        >
-            Verify Now
-        </a>
+                    <% } %>
 
-    <% } %>
+                </div>
 
-</div>
+            </div>
 
         </section>
 
 
-        <!-- Action Buttons -->
-
+        <!-- Profile Actions -->
         <div class="profile-actions">
 
             <a
                 href="/profile/edit"
                 class="profile-button"
             >
-                ✎ Edit Profile
+                <i class="fa-solid fa-pen-to-square"></i>
+                Edit Profile
             </a>
 
 
@@ -156,29 +117,32 @@
                 href="/change-password"
                 class="profile-button"
             >
-                ⚿ Change Password
+                <i class="fa-solid fa-lock"></i>
+                Change Password
             </a>
 
-           <a
-             href="/set-password"
-             class="profile-button set-password-button"
+
+            <a
+                href="/set-password"
+                class="profile-button set-password-button"
             >
-             🔑 Set Password
+                <i class="fa-solid fa-key"></i>
+                Set Password
             </a>
 
 
             <form
                 action="/logout"
                 method="POST"
+                class="logout-form"
             >
-
                 <button
                     type="submit"
                     class="profile-button logout-profile"
                 >
-                    ⏻ Logout
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Logout
                 </button>
-
             </form>
 
         </div>
@@ -186,13 +150,19 @@
 
     <% } else { %>
 
+        <!-- Not Logged In -->
         <div class="not-logged-in">
 
-            <h2>
-                You are not logged in
-            </h2>
+            <div class="not-logged-icon">
+                <i class="fa-solid fa-user-lock"></i>
+            </div>
 
-            <a href="/login">
+            <h2>You are not logged in</h2>
+
+            <p>Please login to view your profile.</p>
+
+            <a href="/login" class="profile-login-button">
+                <i class="fa-solid fa-right-to-bracket"></i>
                 Login
             </a>
 
@@ -202,4 +172,5 @@
 
 </main>
 
+<%- include("../partials/footer") %>
 
