@@ -3,11 +3,7 @@ import crypto from "crypto";
 
 import { env } from "../config/env.js";
 
-/*
-|--------------------------------------------------------------------------
-| Generate Access Token
-|--------------------------------------------------------------------------
-*/
+//Generate Access Token
 
 export const generateAccessToken = (user, sessionId) => {
   return jwt.sign(
@@ -24,11 +20,7 @@ export const generateAccessToken = (user, sessionId) => {
   );
 };
 
-/*
-|--------------------------------------------------------------------------
-| Generate Refresh Token
-|--------------------------------------------------------------------------
-*/
+//Generate Refresh Token
 
 export const generateRefreshToken = (user, sessionId) => {
   return jwt.sign(
@@ -43,66 +35,37 @@ export const generateRefreshToken = (user, sessionId) => {
   );
 };
 
-/*
----------------------------------------------------------------------------
-generateRandomToken 
----------------------------------------------------------------------------
-*/
+//generateRandomToken
 
-// export const generateRandomToken = () => {
-//   return crypto.randomBytes(32).toString("hex");
-// };
-
-/*
-|--------------------------------------------------------------------------
-| Verify Access Token
-|--------------------------------------------------------------------------
-*/
+//Verify Access Token
 
 export const verifyAccessToken = (token) => {
   return jwt.verify(token, env.JWT_ACCESS_SECRET);
 };
 
-/*
-|--------------------------------------------------------------------------
-| Verify Refresh Token
-|--------------------------------------------------------------------------
-*/
+//Verify Refresh Token
 
 export const verifyRefreshToken = (token) => {
   return jwt.verify(token, env.JWT_REFRESH_SECRET);
 };
 
-/*
-|--------------------------------------------------------------------------
-| GENERATE 8-DIGIT EMAIL VERIFICATION CODE
-|--------------------------------------------------------------------------
-*/
+//GENERATE 8-DIGIT EMAIL VERIFICATION CODE
 
 export const generateEmailVerificationCode = () => {
   return crypto.randomInt(10000000, 100000000).toString();
 };
 
-/*
-|---------------------------------------------------------------------------
-| GENERATE EMAIL VERIFICATION LINK TOKEN
-|---------------------------------------------------------------------------
-*/
+//GENERATE EMAIL VERIFICATION LINK TOKEN
 
 export const generateEmailVerificationToken = () => {
   return crypto.randomBytes(32).toString("hex");
 };
 
-
 //reset-token function
 export function generatePasswordResetToken() {
   return crypto.randomBytes(32).toString("hex");
 }
-/*
-|--------------------------------------------------------------------------
-| Hash Refresh Token
-|--------------------------------------------------------------------------
-*/
+//Hash Refresh Token
 
 export const hashToken = (token) => {
   return crypto.createHash("sha256").update(token).digest("hex");

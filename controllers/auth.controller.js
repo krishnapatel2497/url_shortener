@@ -148,11 +148,7 @@ export const postRegisterPage = async (req, res) => {
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| GET LOGIN PAGE
-|--------------------------------------------------------------------------
-*/
+//GET LOGIN PAGE
 
 export const getLoginPage = (req, res) => {
   if (req.user) {
@@ -165,11 +161,7 @@ export const getLoginPage = (req, res) => {
   });
 };
 
-/*
-|--------------------------------------------------------------------------
-| POST LOGIN
-|--------------------------------------------------------------------------
-*/
+//POST LOGIN
 
 export const postLogin = async (req, res) => {
   if (req.user) {
@@ -177,11 +169,7 @@ export const postLogin = async (req, res) => {
   }
 
   try {
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Validate Login Data
-    |--------------------------------------------------------------------------
-    */
+    //1. Validate Login Data
 
     const { data, error } = loginUserSchema.safeParse(req.body);
 
@@ -193,19 +181,11 @@ export const postLogin = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Get Login Data
-    |--------------------------------------------------------------------------
-    */
+    //2. Get Login Data
 
     const { email, password } = data;
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Find User
-    |--------------------------------------------------------------------------
-    */
+    //3. Find User
 
     const user = await userCollection.findOne({
       email,
@@ -217,11 +197,7 @@ export const postLogin = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Google-only Account Check
-    |--------------------------------------------------------------------------
-    */
+    //Google-only Account Check
 
     if (!user.password) {
       req.flash(
@@ -232,11 +208,7 @@ export const postLogin = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Verify Password
-    |--------------------------------------------------------------------------
-    */
+    //4. Verify Password
 
     const isPasswordCorrect = await argon2.verify(user.password, password);
 
@@ -246,11 +218,7 @@ export const postLogin = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Check Email Verification
-    |--------------------------------------------------------------------------
-    */
+    //5. Check Email Verification
 
     if (!user.emailVerified) {
       req.flash("errors", "Please verify your email before logging in.");
@@ -258,27 +226,15 @@ export const postLogin = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Create Authentication Session
-    |--------------------------------------------------------------------------
-    */
+    //6. Create Authentication Session
 
     const { accessToken, refreshToken } = await createAuthSession(user, req);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 7. Set Authentication Cookies
-    |--------------------------------------------------------------------------
-    */
+    //7. Set Authentication Cookies
 
     setAuthCookies(res, accessToken, refreshToken);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Login Successful
-    |--------------------------------------------------------------------------
-    */
+    //8. Login Successful
 
     return res.redirect("/");
   } catch (error) {
@@ -290,21 +246,7 @@ export const postLogin = async (req, res) => {
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| GOOGLE LOGIN
-|--------------------------------------------------------------------------
-|
-| Step 1:
-| User clicks "Continue with Google"
-|
-| /google
-|
-| This function creates Google's authorization URL
-| and redirects the user to Google.
-|
-|--------------------------------------------------------------------------
-*/
+//GOOGLE LOGIN
 
 export const googleLogin = (req, res) => {
   try {
@@ -326,38 +268,11 @@ export const googleLogin = (req, res) => {
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| GOOGLE CALLBACK
-|--------------------------------------------------------------------------
-|
-| Step 2:
-|
-| Google redirects the user to:
-|
-| /google/callback
-|
-| Then we:
-|
-| 1. Get authorization code
-| 2. Exchange code for Google tokens
-| 3. Verify Google ID token
-| 4. Get Google user information
-| 5. Find or create user in MongoDB
-| 6. Create our application's session
-| 7. Set JWT cookies
-| 8. Redirect to home page
-|
-|--------------------------------------------------------------------------
-*/
+//GOOGLE CALLBACK
 
 export const googleCallback = async (req, res) => {
   try {
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Get Authorization Code
-    |--------------------------------------------------------------------------
-    */
+    // 1. Get Authorization Code
 
     const { code } = req.query;
 
@@ -367,19 +282,11 @@ export const googleCallback = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Exchange Authorization Code for Google Tokens
-    |--------------------------------------------------------------------------
-    */
+    //2. Exchange Authorization Code for Google Tokens
 
     const { tokens } = await googleOAuthClient.getToken(code);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Check ID Token
-    |--------------------------------------------------------------------------
-    */
+    //3. Check ID Token
 
     if (!tokens.id_token) {
       req.flash("errors", "Google authentication failed.");
@@ -387,22 +294,14 @@ export const googleCallback = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Verify Google ID Token
-    |--------------------------------------------------------------------------
-    */
+    //4. Verify Google ID Token
 
     const ticket = await googleOAuthClient.verifyIdToken({
       idToken: tokens.id_token,
       audience: env.GOOGLE_CLIENT_ID,
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Get Google User Information
-    |--------------------------------------------------------------------------
-    */
+    //5. Get Google User Information
 
     const payload = ticket.getPayload();
 
@@ -418,11 +317,7 @@ export const googleCallback = async (req, res) => {
     const picture = payload.picture;
     const emailVerified = payload.email_verified;
 
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Validate Google Account Information
-    |--------------------------------------------------------------------------
-    */
+    //6. Validate Google Account Information
 
     if (!googleId || !email) {
       req.flash("errors", "Unable to get Google account information.");
@@ -430,11 +325,7 @@ export const googleCallback = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Make Sure Google Email Is Verified
-    |--------------------------------------------------------------------------
-    */
+    //Make Sure Google Email Is Verified
 
     if (!emailVerified) {
       req.flash("errors", "Your Google email is not verified.");
@@ -442,21 +333,13 @@ export const googleCallback = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 7. Find Existing User
-    |--------------------------------------------------------------------------
-    */
+    //7. Find Existing User
 
     let user = await userCollection.findOne({
       email,
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Create New User
-    |--------------------------------------------------------------------------
-    */
+    //8. Create New User
 
     if (!user) {
       const newUser = {
@@ -480,16 +363,7 @@ export const googleCallback = async (req, res) => {
         ...newUser,
       };
     } else {
-      /*
-      |--------------------------------------------------------------------------
-      | 9. Existing User
-      |--------------------------------------------------------------------------
-      |
-      | If the user already exists with the same email,
-      | connect their Google account to the existing account.
-      |
-      |--------------------------------------------------------------------------
-      */
+      //9. Existing User
 
       const updateData = {
         googleId,
@@ -516,33 +390,15 @@ export const googleCallback = async (req, res) => {
       };
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 10. Create Authentication Session
-    |--------------------------------------------------------------------------
-    |
-    | Google authentication is now complete.
-    |
-    | We use the SAME session system as normal login.
-    |
-    |--------------------------------------------------------------------------
-    */
+    //10. Create Authentication Session
 
     const { accessToken, refreshToken } = await createAuthSession(user, req);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 11. Set Authentication Cookies
-    |--------------------------------------------------------------------------
-    */
+    //11. Set Authentication Cookies
 
     setAuthCookies(res, accessToken, refreshToken);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 12. Google Login Successful
-    |--------------------------------------------------------------------------
-    */
+    //12. Google Login Successful
 
     return res.redirect("/");
   } catch (error) {
@@ -554,11 +410,7 @@ export const googleCallback = async (req, res) => {
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| GET CURRENT USER
-|--------------------------------------------------------------------------
-*/
+//GET CURRENT USER
 
 export const getme = (req, res) => {
   if (!req.user) {
@@ -568,11 +420,7 @@ export const getme = (req, res) => {
   return res.send(`<h1>Hey ${req.user.name} - ${req.user.email}</h1>`);
 };
 
-/*
-|--------------------------------------------------------------------------
-| LOGOUT USER
-|--------------------------------------------------------------------------
-*/
+//LOGOUT USER
 
 export const logoutUser = async (req, res) => {
   try {
@@ -600,11 +448,7 @@ export const logoutUser = async (req, res) => {
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| CHANGE PASSWORD PAGE
-|--------------------------------------------------------------------------
-*/
+//CHANGE PASSWORD PAGE
 
 // Show Change Password Page
 export const changePasswordPage = (req, res) => {
@@ -614,11 +458,7 @@ export const changePasswordPage = (req, res) => {
 // Change Password
 export const changePassword = async (req, res) => {
   try {
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Validate Request Body
-    |--------------------------------------------------------------------------
-    */
+    //1. Validate Request Body
 
     const result = changePasswordSchema.safeParse(req.body);
 
@@ -631,19 +471,11 @@ export const changePassword = async (req, res) => {
 
     const { currentPassword, newPassword } = result.data;
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Get Logged-In User ID
-    |--------------------------------------------------------------------------
-    */
+    //2. Get Logged-In User ID
 
     const userId = req.user.id;
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Find User
-    |--------------------------------------------------------------------------
-    */
+    // //3. Find User
 
     const user = await userCollection.findOne({
       _id: new ObjectId(userId),
@@ -656,15 +488,7 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Check Password Exists
-    |--------------------------------------------------------------------------
-    |
-    | Google-only users don't have a password.
-    |
-    |--------------------------------------------------------------------------
-    */
+    //4. Check Password Exists
 
     if (!user.password) {
       return res.status(400).json({
@@ -673,11 +497,7 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Verify Current Password
-    |--------------------------------------------------------------------------
-    */
+    //5. Verify Current Password
 
     const isPasswordValid = await argon2.verify(user.password, currentPassword);
 
@@ -688,19 +508,11 @@ export const changePassword = async (req, res) => {
       });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Hash New Password
-    |--------------------------------------------------------------------------
-    */
+    //6. Hash New Password
 
     const hashedPassword = await argon2.hash(newPassword);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 7. Update Password
-    |--------------------------------------------------------------------------
-    */
+    //7. Update Password
 
     await userCollection.updateOne(
       {
@@ -714,29 +526,17 @@ export const changePassword = async (req, res) => {
       },
     );
 
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Revoke All Existing Sessions
-    |--------------------------------------------------------------------------
-    */
+    //8. Revoke All Existing Sessions
 
     await deleteAllUserSessions(userId);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 9. Clear Authentication Cookies
-    |--------------------------------------------------------------------------
-    */
+    //9. Clear Authentication Cookies
 
     res.clearCookie("access_token");
 
     res.clearCookie("refresh_token");
 
-    /*
-    |--------------------------------------------------------------------------
-    | 10. Redirect to Login
-    |--------------------------------------------------------------------------
-    */
+    //10. Redirect to Login
 
     return res.redirect("/login");
   } catch (error) {
@@ -749,28 +549,16 @@ export const changePassword = async (req, res) => {
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| SET PASSWORD PAGE
-|--------------------------------------------------------------------------
-*/
+//SET PASSWORD PAGE
 
 // Show Set Password Page
 export const setPasswordPage = async (req, res) => {
   try {
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Get Logged-In User ID
-    |--------------------------------------------------------------------------
-    */
+    //1. Get Logged-In User ID
 
     const userId = req.user.id;
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Find User
-    |--------------------------------------------------------------------------
-    */
+    //2. Find User
 
     const user = await userCollection.findOne({
       _id: new ObjectId(userId),
@@ -782,14 +570,7 @@ export const setPasswordPage = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Check Whether Password Already Exists
-    |--------------------------------------------------------------------------
-    |
-    | Set Password is ONLY for users who don't have a password.
-    |
-    */
+    //3. Check Whether Password Already Exists
 
     if (user.password) {
       req.flash("errors", "You already have a password.");
@@ -797,11 +578,7 @@ export const setPasswordPage = async (req, res) => {
       return res.redirect("/");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Show Set Password Page
-    |--------------------------------------------------------------------------
-    */
+    //4. Show Set Password Page
 
     return res.render("auth/set-password", {
       errors: req.flash("errors"),
@@ -819,19 +596,11 @@ export const setPasswordPage = async (req, res) => {
 // Set Password
 export const setPassword = async (req, res) => {
   try {
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Get Password Data
-    |--------------------------------------------------------------------------
-    */
+    //1. Get Password Data
 
     const { password, confirmPassword } = req.body;
 
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Check Password Fields
-    |--------------------------------------------------------------------------
-    */
+    //2. Check Password Fields
 
     if (!password || !confirmPassword) {
       req.flash("errors", "Please enter both password fields.");
@@ -839,11 +608,7 @@ export const setPassword = async (req, res) => {
       return res.redirect("/set-password");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Check Password Length
-    |--------------------------------------------------------------------------
-    */
+    //3. Check Password Length
 
     if (password.length < 6) {
       req.flash("errors", "Password must be at least 6 characters long.");
@@ -851,11 +616,7 @@ export const setPassword = async (req, res) => {
       return res.redirect("/set-password");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Check Password Confirmation
-    |--------------------------------------------------------------------------
-    */
+    //4. Check Password Confirmation
 
     if (password !== confirmPassword) {
       req.flash("errors", "Passwords do not match.");
@@ -863,19 +624,11 @@ export const setPassword = async (req, res) => {
       return res.redirect("/set-password");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Get Logged-In User ID
-    |--------------------------------------------------------------------------
-    */
+    //5. Get Logged-In User ID
 
     const userId = req.user.id;
 
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Find User
-    |--------------------------------------------------------------------------
-    */
+    //6. Find User
 
     const user = await userCollection.findOne({
       _id: new ObjectId(userId),
@@ -887,11 +640,7 @@ export const setPassword = async (req, res) => {
       return res.redirect("/login");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 7. Make Sure User Doesn't Already Have a Password
-    |--------------------------------------------------------------------------
-    */
+    //7. Make Sure User Doesn't Already Have a Password
 
     if (user.password) {
       req.flash("errors", "You already have a password.");
@@ -899,19 +648,11 @@ export const setPassword = async (req, res) => {
       return res.redirect("/");
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Hash Password Using Argon2
-    |--------------------------------------------------------------------------
-    */
+    //8. Hash Password Using Argon2
 
     const hashedPassword = await argon2.hash(password);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 9. Save Password in MongoDB
-    |--------------------------------------------------------------------------
-    */
+    //9. Save Password in MongoDB
 
     await userCollection.updateOne(
       {
@@ -925,11 +666,7 @@ export const setPassword = async (req, res) => {
       },
     );
 
-    /*
-    |--------------------------------------------------------------------------
-    | 10. Success
-    |--------------------------------------------------------------------------
-    */
+    //10. Success
 
     req.flash(
       "success",
@@ -946,19 +683,11 @@ export const setPassword = async (req, res) => {
   }
 };
 
-/*
-|--------------------------------------------------------------------------
-| REFRESH ACCESS TOKEN
-|--------------------------------------------------------------------------
-*/
+//REFRESH ACCESS TOKEN
 
 export const refreshAccessToken = async (req, res) => {
   try {
-    /*
-    |--------------------------------------------------------------------------
-    | 1. Get Refresh Token
-    |--------------------------------------------------------------------------
-    */
+    //1. Get Refresh Token
 
     const refreshToken = req.cookies.refresh_token;
 
@@ -966,37 +695,18 @@ export const refreshAccessToken = async (req, res) => {
       return res.status(401).json({
         message: "Refresh token missing",
       });
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 2. Verify Refresh Token
-    |--------------------------------------------------------------------------
-    */
+    } //2. Verify Refresh Token
 
     const decoded = verifyRefreshToken(refreshToken);
 
-    const sessionId = decoded.sessionId;
-
-    /*
-    |--------------------------------------------------------------------------
-    | 3. Find Session
-    |--------------------------------------------------------------------------
-    */
-
+    const sessionId = decoded.sessionId; //3. Find Session
     const session = await getSessionById(sessionId);
 
     if (!session) {
       return res.status(401).json({
         message: "Session expired or revoked",
       });
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 4. Compare Refresh Token Hash
-    |--------------------------------------------------------------------------
-    */
+    } //4. Compare Refresh Token Hash
 
     const refreshTokenHash = hashToken(refreshToken);
 
@@ -1004,13 +714,7 @@ export const refreshAccessToken = async (req, res) => {
       return res.status(401).json({
         message: "Invalid refresh token",
       });
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 5. Find User
-    |--------------------------------------------------------------------------
-    */
+    } //5. Find User
 
     const user = await userCollection.findOne({
       _id: session.userId,
@@ -1020,55 +724,22 @@ export const refreshAccessToken = async (req, res) => {
       return res.status(401).json({
         message: "User not found",
       });
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | 6. Check Email Verification
-    |--------------------------------------------------------------------------
-    */
+    } //6. Check Email Verification
 
     if (!user.emailVerified) {
       return res.status(403).json({
         message: "Email is not verified",
       });
-    }
+    } //7. Generate New Access Token
 
-    /*
-    |--------------------------------------------------------------------------
-    | 7. Generate New Access Token
-    |--------------------------------------------------------------------------
-    */
-
-    const newAccessToken = generateAccessToken(user, sessionId);
-
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Update Session Last Used
-    |--------------------------------------------------------------------------
-    */
-
-    await updateSessionLastUsed(sessionId);
-
-    /*
-    |--------------------------------------------------------------------------
-    | 9. Set New Access Token Cookie
-    |--------------------------------------------------------------------------
-    */
-
+    const newAccessToken = generateAccessToken(user, sessionId); //8. Update Session Last Used
+    await updateSessionLastUsed(sessionId); //9. Set New Access Token Cookie
     res.cookie("access_token", newAccessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 15 * 60 * 1000,
-    });
-
-    /*
-    |--------------------------------------------------------------------------
-    | 10. Response
-    |--------------------------------------------------------------------------
-    */
-
+    }); //10. Response
     return res.json({
       message: "Access token refreshed",
     });

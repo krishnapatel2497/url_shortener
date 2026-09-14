@@ -8,33 +8,13 @@ import {
 
 const router = express.Router();
 
-/*
-|--------------------------------------------------------------------------
-| GET VERIFY EMAIL PAGE
-|--------------------------------------------------------------------------
-*/
-
+//GET VERIFY EMAIL PAGE
 router.get("/verify-email", getVerifyEmailPage);
 
-/*
-|--------------------------------------------------------------------------
-| POST VERIFY EMAIL USING 8-DIGIT CODE
-|--------------------------------------------------------------------------
-*/
-
+//POST VERIFY EMAIL USING 8-DIGIT CODE
 router.post("/verify-email", verifyEmail);
 
-/*
-|--------------------------------------------------------------------------
-| GET VERIFY EMAIL USING GMAIL LINK
-|--------------------------------------------------------------------------
-|
-| Example:
-| /verify-email/link?token=abc123
-|
-|--------------------------------------------------------------------------
-*/
-
+//GET VERIFY EMAIL USING GMAIL LINK
 router.get("/verify-email/link", verifyEmailByLink);
 
 export default router;

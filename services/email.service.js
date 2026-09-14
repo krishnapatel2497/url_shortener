@@ -3,20 +3,14 @@ import nodemailer from "nodemailer";
 import transporter from "../config/mail.js";
 import { env } from "../config/env.js";
 
-// --------------------------------------------------
 // SEND VERIFICATION EMAIL
-// --------------------------------------------------
 
 export const sendVerificationEmail = async (
   email,
   verificationCode,
   verificationToken,
 ) => {
-  /*
-  |------------------------------------------------------------------
-  | Create Verification URL
-  |------------------------------------------------------------------
-  */
+  //Create Verification URL
 
   const verificationUrl = new URL(
     "/verify-email/link",
@@ -25,11 +19,7 @@ export const sendVerificationEmail = async (
 
   verificationUrl.searchParams.set("token", verificationToken);
 
-  /*
-  |------------------------------------------------------------------
-  | Send Email
-  |------------------------------------------------------------------
-  */
+  //Send Email
 
   const info = await transporter.sendMail({
     from: `"URL Shortener" <${env.ETHEREAL_USER}>`,
@@ -38,11 +28,7 @@ export const sendVerificationEmail = async (
 
     subject: "Verify Your Email",
 
-    /*
-    |----------------------------------------------------------------
-    | Plain Text Email
-    |----------------------------------------------------------------
-    */
+    //Plain Text Email
 
     text: `
 Thank you for registering with URL Shortener.
@@ -58,11 +44,7 @@ ${verificationUrl.toString()}
 This code and verification link will expire in 15 minutes.
 `,
 
-    /*
-    |----------------------------------------------------------------
-    | HTML Email
-    |----------------------------------------------------------------
-    */
+    //HTML Email
 
     html: `
       <div
@@ -139,9 +121,7 @@ This code and verification link will expire in 15 minutes.
   console.log("Preview URL:", nodemailer.getTestMessageUrl(info));
 };
 
-// --------------------------------------------------
 // SEND PASSWORD RESET EMAIL
-// --------------------------------------------------
 
 export const sendPasswordResetEmail = async ({ email, resetUrl }) => {
   const info = await transporter.sendMail({
@@ -151,9 +131,7 @@ export const sendPasswordResetEmail = async ({ email, resetUrl }) => {
 
     subject: "Reset Your Password",
 
-    // --------------------------------------------------
     // Plain Text Email
-    // --------------------------------------------------
 
     text: `
 You requested to reset your password for URL Shortener.
@@ -167,9 +145,7 @@ This password reset link will expire in 15 minutes.
 If you did not request a password reset, you can safely ignore this email.
 `,
 
-    // --------------------------------------------------
     // HTML Email
-    // --------------------------------------------------
 
     html: `
       <div
@@ -239,9 +215,7 @@ If you did not request a password reset, you can safely ignore this email.
   console.log("Preview URL:", nodemailer.getTestMessageUrl(info));
 };
 
-// --------------------------------------------------
 // SEND TEST EMAIL
-// --------------------------------------------------
 
 export const sendTestEmail = async () => {
   const info = await transporter.sendMail({

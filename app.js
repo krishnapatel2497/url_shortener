@@ -17,49 +17,25 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-/*
-|--------------------------------------------------------------------------
-| Static Files
-|--------------------------------------------------------------------------
-*/
+//Static Files
 
 app.use(express.static("public"));
 
-/*
-|--------------------------------------------------------------------------
-| Body Parser
-|--------------------------------------------------------------------------
-*/
+//Body Parser
 
 app.use(express.urlencoded({ extended: true })); //POST request
 
 app.use(express.json());
 
-/*
-|--------------------------------------------------------------------------
-| EJS Template Engine
-|--------------------------------------------------------------------------
-*/
+//EJS Template Engine
 
 app.set("view engine", "ejs");
 
-/*
-|--------------------------------------------------------------------------
-| Cookie Parser
-|--------------------------------------------------------------------------
-*/
+//Cookie Parser
 
 app.use(cookieParser());
 
-/*
-|--------------------------------------------------------------------------
-| Express Session
-|--------------------------------------------------------------------------
-|
-| Used here for connect-flash messages
-| Authentication itself is handled using JWT + MongoDB sessions.
-|
-*/
+//Express Session
 
 app.use(
   session({
@@ -75,47 +51,19 @@ app.use(
   }),
 );
 
-/*
-|--------------------------------------------------------------------------
-| Flash Messages
-|--------------------------------------------------------------------------
-*/
+// Flash Messages
 
 app.use(flash());
 
-/*
-|--------------------------------------------------------------------------
-| Request IP
-|--------------------------------------------------------------------------
-*/
+//Request IP
 
 app.use(requestIp.mw());
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Middleware
-|--------------------------------------------------------------------------
-|
-| Checks the access_token cookie and sets:
-|
-| req.user
-|
-*/
+//Authentication Middleware
 
 app.use(verifyAuthentication);
 
-/*
-|--------------------------------------------------------------------------
-| Make User Available in EJS
-|--------------------------------------------------------------------------
-|
-| Now you can use:
-|
-| <%= user %>
-|
-| inside EJS files.
-|
-*/
+//Make User Available in EJS
 
 app.use((req, res, next) => {
   res.locals.user = req.user;
@@ -123,11 +71,8 @@ app.use((req, res, next) => {
   return next();
 });
 
-/*
-|--------------------------------------------------------------------------
-| Routes
-|--------------------------------------------------------------------------
-*/
+//Routes
+
 app.use("/", profileRoutes);
 
 app.use("/", emailRoutes);
@@ -141,22 +86,15 @@ app.use(authRoutes);
 
 app.use(shortenerRoutes);
 
-/*
-|--------------------------------------------------------------------------
-| MongoDB Connection
-|--------------------------------------------------------------------------
-*/
+//MongoDB Connection
 
 await dbclient.connect();
 
 console.log("MongoDB Connected successfully");
 
-/*
-|--------------------------------------------------------------------------
-| Start Server
-|--------------------------------------------------------------------------
-*/
+//Start Server
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+

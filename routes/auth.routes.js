@@ -39,9 +39,9 @@ router.post("/set-password", verifyAuthentication, setPassword);
 
 router.post("/logout", logoutUser);
 
-// =========================
+
 // Google OAuth
-// =========================
+
 
 // Step 1: Start Google Login
 router.get("/google", googleLogin);
